@@ -1,4 +1,4 @@
-
+const API_ROOT = https://tic-tac-rewards-2.onrender.com
 // app.js - TicTacPlay (client-side only)
 // Features: music, sound fx as WebAudio, AI (minimax), local 2-player, scoreboard, localStorage
 
