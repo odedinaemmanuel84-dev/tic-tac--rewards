@@ -1,46 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>TicTac Rewards</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TicTacRewards</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>TicTac Rewards</h1>
+  <main>
+    <h1>TicTacRewards</h1>
 
-  <!-- Registration -->
-  <div>
-    <input id="nameInput" type="text" placeholder="Enter your name">
-    <input id="emailInput" type="email" placeholder="Enter your email">
-    <button id="registerBtn">Register</button>
-  </div>
+    <section id="auth">
+      <input id="name" placeholder="Your name" />
+      <input id="email" placeholder="Your email" />
+      <button id="btnRegister">Register / Login</button>
+      <div id="userInfo"></div>
+    </section>
 
-  <hr>
+    <section id="gameArea" style="display:none">
+      <div id="topControls">
+        <select id="modeSelect">
+          <option value="pvc">Play vs AI</option>
+          <option value="pvp-local">2 Players (Local)</option>
+          <option value="pvp-online">Play Online</option>
+        </select>
 
-  <!-- Demo Game -->
-  <div>
-    <button id="demoBtn">Play Demo</button>
-  </div>
+        <button id="btnStart">Start</button>
+        <button id="btnReset">Reset</button>
+      </div>
 
-  <hr>
+      <div id="boardWrap">
+        <div id="message"></div>
+        <div id="board" class="board"></div>
+      </div>
 
-  <!-- Upgrade to Premium -->
-  <div>
-    <button id="upgradeBtn">Upgrade to Premium</button>
-  </div>
+      <div id="demoControls">
+        <button id="btnStartDemo">Start Demo (uses one demo play)</button>
+        <button id="btnPlayWin">Simulate Win</button>
+        <div id="upgradeBox">
+          <label>Premium tier:
+            <select id="tierSelect">
+              <option value="500">₦500</option>
+              <option value="1000">₦1000</option>
+              <option value="5000">₦5000</option>
+            </select>
+          </label>
+          <button id="btnUpgrade">Upgrade (Pay)</button>
+        </div>
+        <div id="rewards">
+          <p id="rewardInfo">Balance: 0</p>
+          <input id="accName" placeholder="Account name" />
+          <input id="accNumber" placeholder="Account number" />
+          <input id="bankCode" placeholder="Bank code" />
+          <button id="btnCreateRecipient">Create Recipient</button>
+          <input id="withdrawAmount" placeholder="Withdraw Amount (NGN)" />
+          <button id="btnWithdraw">Withdraw</button>
+        </div>
+      </div>
 
-  <hr>
+      <div id="onlineBox" style="display:none">
+        <input id="roomId" placeholder="Room id (leave empty to create)" />
+        <button id="btnJoinRoom">Create / Join Room</button>
+        <div id="roomInfo"></div>
+      </div>
+    </section>
 
-  <!-- Withdraw -->
-  <div>
-    <button id="withdrawBtn">Withdraw Rewards</button>
-  </div>
+    <footer>
+      <small>Demo data resets on server restart. Add Paystack keys on server .env for real payments.</small>
+    </footer>
+  </main>
 
-  <hr>
+  <audio id="sndClick" src=""></audio>
+  <audio id="sndWin" src=""></audio>
+  <audio id="sndDraw" src=""></audio>
 
-  <!-- Game Board Placeholder -->
-  <p>Game board and extra features coming soon...</p>
-
+  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
   <script src="app.js"></script>
 </body>
-</html>
+              </html>
