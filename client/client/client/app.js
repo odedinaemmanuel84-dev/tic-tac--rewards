@@ -1,4 +1,4 @@
-const API_ROOT = https://tic-tac-rewards-2.onrender.com/
+const API_ROOT= https://tic-tac-rewards-2.onrender.com
 
 let currentPlayer = "X";
 let board = ["", "", "", "", "", "", "", "", ""];
