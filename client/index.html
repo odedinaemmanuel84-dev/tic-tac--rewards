@@ -1,80 +1,36 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TicTacRewards</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic-Tac-Toe Rewards</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main>
-    <h1>TicTacRewards</h1>
+  <div class="container">
+    <h1>🎮 Tic-Tac-Toe Rewards</h1>
 
-    <section id="auth">
-      <input id="name" placeholder="Your name" />
-      <input id="email" placeholder="Your email" />
-      <button id="btnRegister">Register / Login</button>
-      <div id="userInfo"></div>
-    </section>
+    <!-- Auth Section -->
+    <div id="auth">
+      <h2>Register</h2>
+      <input type="text" id="regUsername" placeholder="Username" />
+      <input type="email" id="regEmail" placeholder="Email" />
+      <button onclick="registerUser()">Register</button>
 
-    <section id="gameArea" style="display:none">
-      <div id="topControls">
-        <select id="modeSelect">
-          <option value="pvc">Play vs AI</option>
-          <option value="pvp-local">2 Players (Local)</option>
-          <option value="pvp-online">Play Online</option>
-        </select>
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email" />
+      <button onclick="loginUser()">Login</button>
+    </div>
 
-        <button id="btnStart">Start</button>
-        <button id="btnReset">Reset</button>
-      </div>
+    <!-- Game Section -->
+    <div id="game" class="hidden">
+      <h2 id="welcomeMsg"></h2>
+      <div class="board" id="board"></div>
+      <p id="status"></p>
+      <button onclick="resetGame()">Restart Game</button>
+    </div>
+  </div>
 
-      <div id="boardWrap">
-        <div id="message"></div>
-        <div id="board" class="board"></div>
-      </div>
-
-      <div id="demoControls">
-        <button id="btnStartDemo">Start Demo (uses one demo play)</button>
-        <button id="btnPlayWin">Simulate Win</button>
-        <div id="upgradeBox">
-          <label>Premium tier:
-            <select id="tierSelect">
-              <option value="500">₦500</option>
-              <option value="1000">₦1000</option>
-              <option value="5000">₦5000</option>
-            </select>
-          </label>
-          <button id="btnUpgrade">Upgrade (Pay)</button>
-        </div>
-        <div id="rewards">
-          <p id="rewardInfo">Balance: 0</p>
-          <input id="accName" placeholder="Account name" />
-          <input id="accNumber" placeholder="Account number" />
-          <input id="bankCode" placeholder="Bank code" />
-          <button id="btnCreateRecipient">Create Recipient</button>
-          <input id="withdrawAmount" placeholder="Withdraw Amount (NGN)" />
-          <button id="btnWithdraw">Withdraw</button>
-        </div>
-      </div>
-
-      <div id="onlineBox" style="display:none">
-        <input id="roomId" placeholder="Room id (leave empty to create)" />
-        <button id="btnJoinRoom">Create / Join Room</button>
-        <div id="roomInfo"></div>
-      </div>
-    </section>
-
-    <footer>
-      <small>Demo data resets on server restart. Add Paystack keys on server .env for real payments.</small>
-    </footer>
-  </main>
-
-  <audio id="sndClick" src=""></audio>
-  <audio id="sndWin" src=""></audio>
-  <audio id="sndDraw" src=""></audio>
-
-  <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
   <script src="app.js"></script>
 </body>
-              </html>
+</html>
