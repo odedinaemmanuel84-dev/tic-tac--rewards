@@ -2,7 +2,7 @@
 // ====== IMPORTANT: set these to your backend URL before deploying ======
 // Example: const API_ROOT = "https://tic-tac-backend.onrender.com";
 const API_ROOT = https://tic-tac-rewards-2.onrender.com
-const SOCKET_URL = io(API_ROOT)
+const SOCKET_URL = https://tic-tac-rewards-2.onrender.com
 
 if(!API_ROOT || !SOCKET_URL){
   console.warn('Set API_ROOT and SOCKET_URL at top of client/app.js before deploying or testing.');
