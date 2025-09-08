@@ -1,87 +1,75 @@
-// server/index.js
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const axios = require("axios");
+import express from "express";
+import cors from "cors";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(cors());
+app.use(express.json());
 
-app.use(cors({ origin: "*" }));
-app.use(bodyParser.json());
-
-// Fake DB for demo
+// 🗂 In-memory users (you can swap with database later)
 let users = [];
 
-// Root
-app.get("/", (req, res) => {
-  res.send("✅ Tic-Tac-Toe Rewards API is running...");
-});
-
-// Register
+// ✅ Register
 app.post("/register", (req, res) => {
   const { username, email } = req.body;
   if (!username || !email) return res.status(400).json({ error: "Missing fields" });
-  if (users.find(u => u.email === email)) return res.status(400).json({ error: "User exists" });
 
-  const newUser = { id: users.length + 1, username, email, premium: false };
+  if (users.find(u => u.email === email)) {
+    return res.status(400).json({ error: "User already exists" });
+  }
+
+  const newUser = { username, email, balance: 0, plan: "demo" };
   users.push(newUser);
-  res.json({ message: "User registered", user: newUser });
+  res.json({ message: "Registered!", user: newUser });
 });
 
-// Login
+// ✅ Login
 app.post("/login", (req, res) => {
   const { email } = req.body;
   const user = users.find(u => u.email === email);
+  if (!user) return res.json({ error: "User not found" });
+  res.json({ message: "Logged in!", user });
+});
+
+// ✅ Win → reward ₦400
+app.post("/win", (req, res) => {
+  const { email } = req.body;
+  const user = users.find(u => u.email === email);
   if (!user) return res.status(404).json({ error: "User not found" });
-  res.json({ message: "Login successful", user });
+
+  // Demo reward logic
+  user.balance += 400;
+  res.json({ message: "Reward added!", user });
 });
 
-// Withdraw (Paystack Payout)
-app.post("/withdraw", async (req, res) => {
-  const { account_number, bank_code, amount } = req.body;
+// ✅ Withdraw (placeholder – connect Paystack later)
+app.post("/withdraw", (req, res) => {
+  const { email } = req.body;
+  const user = users.find(u => u.email === email);
+  if (!user) return res.status(404).json({ error: "User not found" });
 
-  if (!account_number || !bank_code || !amount) {
-    return res.status(400).json({ error: "Missing withdrawal details" });
+  if (user.balance < 400) {
+    return res.status(400).json({ error: "Not enough balance to withdraw" });
   }
 
-  try {
-    // Step 1: Resolve account (verify)
-    const verify = await axios.get(`https://api.paystack.co/bank/resolve`, {
-      params: { account_number, bank_code },
-      headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` }
-    });
-
-    // Step 2: Create transfer recipient
-    const recipient = await axios.post(
-      "https://api.paystack.co/transferrecipient",
-      {
-        type: "nuban",
-        name: verify.data.data.account_name,
-        account_number,
-        bank_code,
-        currency: "NGN"
-      },
-      { headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` } }
-    );
-
-    // Step 3: Initiate transfer
-    const transfer = await axios.post(
-      "https://api.paystack.co/transfer",
-      {
-        source: "balance",
-        amount: amount * 100, // Paystack uses kobo
-        recipient: recipient.data.data.recipient_code,
-        reason: "Tic-Tac-Toe Game Reward"
-      },
-      { headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}` } }
-    );
-
-    res.json({ message: "Withdrawal successful", transfer: transfer.data });
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).json({ error: "Withdrawal failed", details: err.response?.data });
-  }
+  // Deduct & simulate transfer
+  user.balance -= 400;
+  res.json({ message: "Withdraw successful! (demo)", user });
 });
 
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// ✅ Upgrade (placeholder – connect Paystack later)
+app.post("/upgrade", (req, res) => {
+  const { email, amount } = req.body;
+  const user = users.find(u => u.email === email);
+  if (!user) return res.status(404).json({ error: "User not found" });
+
+  if (amount < 500) return res.status(400).json({ error: "Minimum is ₦500" });
+
+  user.plan = "premium";
+  res.json({ message: `Upgraded with ₦${amount}`, user });
+});
+
+// ✅ Start server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
+});
