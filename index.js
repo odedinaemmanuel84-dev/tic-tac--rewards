@@ -1,3 +1,6 @@
+app.get("/", (req, res) => {
+  res.send("🎮 Tic-Tac-Toe Rewards Backend is running!");
+});
 import express from "express";
 import cors from "cors";
 
