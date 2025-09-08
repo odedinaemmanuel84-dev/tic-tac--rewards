@@ -1,16 +1,17 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f9f9f9;
+  background: linear-gradient(to right, #6dd5ed, #2193b0);
   text-align: center;
+  color: #fff;
 }
 
 .container {
-  max-width: 400px;
+  max-width: 420px;
   margin: auto;
   padding: 20px;
-  background: #fff;
+  background: rgba(0,0,0,0.6);
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 input, button {
@@ -19,13 +20,13 @@ input, button {
   margin: 8px 0;
   padding: 10px;
   font-size: 16px;
+  border-radius: 6px;
+  border: none;
 }
 
 button {
   background: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -55,8 +56,9 @@ button:hover {
   justify-content: center;
   cursor: pointer;
   border-radius: 8px;
+  color: #000;
 }
 
 .cell:hover {
   background: #ddd;
-}
+  }
