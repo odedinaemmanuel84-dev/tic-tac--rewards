@@ -1,88 +1,46 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>TicTacPlay — Demo</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>TicTac Rewards</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <header class="topbar">
-      <h1>TicTacPlay</h1>
-      <div class="toggles">
-        <label class="toggle">
-          <input id="musicToggle" type="checkbox" />
-          <span>Music</span>
-        </label>
-        <label class="toggle">
-          <input id="soundToggle" type="checkbox" checked />
-          <span>Sound</span>
-        </label>
-      </div>
-    </header>
+  <h1>TicTac Rewards</h1>
 
-    <section class="panel">
-      <div class="controls">
-        <div class="mode-row">
-          <label>Mode:
-            <select id="modeSelect">
-              <option value="pvc">Play vs AI</option>
-              <option value="pvp-local">2 Players (Local)</option>
-            </select>
-          </label>
+  <!-- Registration -->
+  <div>
+    <input id="nameInput" type="text" placeholder="Enter your name">
+    <input id="emailInput" type="email" placeholder="Enter your email">
+    <button id="registerBtn">Register</button>
+  </div>
 
-          <label>First:
-            <select id="firstSelect">
-              <option value="player">Player (X)</option>
-              <option value="ai">AI (X)</option>
-              <option value="random">Random</option>
-            </select>
-          </label>
-        </div>
+  <hr>
 
-        <div class="options-row">
-          <button id="newRoundBtn" class="btn">New Round</button>
-          <button id="resetScoreBtn" class="btn btn-secondary">Reset Scores</button>
-        </div>
-      </div>
+  <!-- Demo Game -->
+  <div>
+    <button id="demoBtn">Play Demo</button>
+  </div>
 
-      <div id="message" class="message">Choose a mode and press New Round</div>
+  <hr>
 
-      <div id="board" class="board" aria-label="Tic Tac Toe board"></div>
+  <!-- Upgrade to Premium -->
+  <div>
+    <button id="upgradeBtn">Upgrade to Premium</button>
+  </div>
 
-      <div class="info-row">
-        <div class="score">
-          <div><strong>X</strong> <span id="scoreX">0</span></div>
-          <div>—</div>
-          <div><strong>O</strong> <span id="scoreO">0</span></div>
-          <div class="spacer"></div>
-          <div><small>Draws: <span id="scoreDraw">0</span></small></div>
-        </div>
-        <div class="actions">
-          <button id="undoBtn" class="btn">Undo</button>
-          <button id="hintBtn" class="btn btn-secondary">Hint</button>
-        </div>
-      </div>
+  <hr>
 
-      <details class="help">
-        <summary>How to play / features</summary>
-        <ul>
-          <li>Play vs AI — AI uses minimax (optimal).</li>
-          <li>Local 2 players — pass the phone to the other player.</li>
-          <li>Music & sound generated in the browser; toggle them on/off.</li>
-          <li>Hint shows a suggested move (only in vs AI).</li>
-          <li>Scores are saved in this browser (localStorage).</li>
-        </ul>
-      </details>
-    </section>
+  <!-- Withdraw -->
+  <div>
+    <button id="withdrawBtn">Withdraw Rewards</button>
+  </div>
 
-    <footer class="footer">
-      <small>Demo game — to add premium / rewards, connect this client to your backend endpoints.</small>
-    </footer>
-  </main>
+  <hr>
+
+  <!-- Game Board Placeholder -->
+  <p>Game board and extra features coming soon...</p>
 
   <script src="app.js"></script>
 </body>
-            </html>
+</html>
