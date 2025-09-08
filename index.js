@@ -1,6 +1,3 @@
-app.get("/", (req, res) => {
-  res.send("🎮 Tic-Tac-Toe Rewards Backend is running!");
-});
 import express from "express";
 import cors from "cors";
 
@@ -8,8 +5,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🗂 In-memory users (you can swap with database later)
+// 🗂 In-memory users (temporary storage)
 let users = [];
+
+// ✅ Home route (fix for "Cannot GET /")
+app.get("/", (req, res) => {
+  res.send("🎮 Tic-Tac-Toe Rewards Backend is running!");
+});
 
 // ✅ Register
 app.post("/register", (req, res) => {
@@ -39,12 +41,11 @@ app.post("/win", (req, res) => {
   const user = users.find(u => u.email === email);
   if (!user) return res.status(404).json({ error: "User not found" });
 
-  // Demo reward logic
   user.balance += 400;
   res.json({ message: "Reward added!", user });
 });
 
-// ✅ Withdraw (placeholder – connect Paystack later)
+// ✅ Withdraw (demo only)
 app.post("/withdraw", (req, res) => {
   const { email } = req.body;
   const user = users.find(u => u.email === email);
@@ -54,12 +55,11 @@ app.post("/withdraw", (req, res) => {
     return res.status(400).json({ error: "Not enough balance to withdraw" });
   }
 
-  // Deduct & simulate transfer
   user.balance -= 400;
   res.json({ message: "Withdraw successful! (demo)", user });
 });
 
-// ✅ Upgrade (placeholder – connect Paystack later)
+// ✅ Upgrade (demo only)
 app.post("/upgrade", (req, res) => {
   const { email, amount } = req.body;
   const user = users.find(u => u.email === email);
