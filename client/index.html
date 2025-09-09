@@ -8,36 +8,37 @@
 <body>
   <h1>🎮 Tic-Tac-Toe Rewards</h1>
 
-  <!-- Register -->
-  <section id="register-section">
+  <!-- Auth Section -->
+  <section>
     <h2>Register</h2>
-    <input id="reg-username" placeholder="Username">
-    <input id="reg-email" placeholder="Email">
-    <button onclick="register()">Register</button>
+    <input id="regUsername" placeholder="Username">
+    <input id="regEmail" placeholder="Email">
+    <button id="registerBtn">Register</button>
   </section>
 
-  <!-- Login -->
-  <section id="login-section">
+  <section>
     <h2>Login</h2>
-    <input id="login-email" placeholder="Email">
-    <button onclick="login()">Login</button>
+    <input id="loginEmail" placeholder="Email">
+    <button id="loginBtn">Login</button>
   </section>
 
-  <!-- Game (hidden until login) -->
-  <section id="game-section" style="display:none;">
-    <h2>Welcome to Tic-Tac-Toe!</h2>
-    <div id="status"></div>
+  <!-- Game Section -->
+  <section id="game" style="display:none;">
+    <h2>Tic Tac Toe</h2>
+    <div id="board" class="board"></div>
+    <p id="status"></p>
+    <button id="restartBtn">Restart Game</button>
+  </section>
 
-    <div class="board" id="board"></div>
-
-    <div class="controls">
-      <button onclick="restartGame()">Restart Game</button>
-      <button onclick="simulateWin()">Simulate Win</button>
-      <button onclick="upgrade()">Upgrade</button>
-      <button onclick="withdraw()">Withdraw</button>
-    </div>
+  <!-- Rewards Section -->
+  <section id="rewards" style="display:none;">
+    <h2>Rewards</h2>
+    <button id="winBtn">Simulate Win (+₦400)</button>
+    <button id="withdrawBtn">Withdraw</button>
+    <button id="upgradeBtn">Upgrade to Premium</button>
+    <p id="balance"></p>
   </section>
 
   <script src="app.js"></script>
 </body>
-</html>
+                                                </html>
