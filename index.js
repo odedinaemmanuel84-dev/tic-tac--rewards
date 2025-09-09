@@ -1,14 +1,21 @@
-import express from "express";
-import cors from "cors";
+const express = require("express");
+const cors = require("cors");
 
 const app = express();
-app.use(cors());
+
+// ✅ Allow Netlify frontend to connect
+app.use(cors({
+  origin: "*", // Allow all origins (you can replace * with your Netlify URL for more security)
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
-// 🗂 In-memory users (temporary storage)
+// 🗂 In-memory users (temporary)
 let users = [];
 
-// ✅ Home route (fix for "Cannot GET /")
+// ✅ Home route
 app.get("/", (req, res) => {
   res.send("🎮 Tic-Tac-Toe Rewards Backend is running!");
 });
