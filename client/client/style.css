@@ -1,44 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>🎮 Tic-Tac-Toe Rewards</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>🎮 Tic-Tac-Toe Rewards</h1>
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 20px;
+}
 
-  <!-- Auth Section -->
-  <section>
-    <h2>Register</h2>
-    <input id="regUsername" placeholder="Username">
-    <input id="regEmail" placeholder="Email">
-    <button id="registerBtn">Register</button>
-  </section>
+h1 {
+  color: #333;
+}
 
-  <section>
-    <h2>Login</h2>
-    <input id="loginEmail" placeholder="Email">
-    <button id="loginBtn">Login</button>
-  </section>
+section {
+  margin: 20px 0;
+}
 
-  <!-- Game Section -->
-  <section id="game" style="display:none;">
-    <h2>Tic Tac Toe</h2>
-    <div id="board" class="board"></div>
-    <p id="status"></p>
-    <button id="restartBtn">Restart Game</button>
-  </section>
+input, button {
+  padding: 10px;
+  margin: 5px;
+}
 
-  <!-- Rewards Section -->
-  <section id="rewards" style="display:none;">
-    <h2>Rewards</h2>
-    <button id="winBtn">Simulate Win (+₦400)</button>
-    <button id="withdrawBtn">Withdraw</button>
-    <button id="upgradeBtn">Upgrade to Premium</button>
-    <p id="balance"></p>
-  </section>
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  grid-gap: 5px;
+  justify-content: center;
+  margin: 20px auto;
+}
 
-  <script src="app.js"></script>
-</body>
-</html>
+.cell {
+  width: 100px;
+  height: 100px;
+  background: #eee;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.cell.taken {
+  cursor: not-allowed;
+  background: #ddd;
+}
