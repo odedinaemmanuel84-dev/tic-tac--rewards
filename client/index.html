@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tic-Tac-Toe Rewards</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>🎮 Tic-Tac-Toe Rewards</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>🎮 Tic-Tac-Toe Rewards</h1>
+  <h1>🎮 Tic-Tac-Toe Rewards</h1>
 
-    <!-- Auth Section -->
-    <div id="auth">
-      <h2>Register</h2>
-      <input type="text" id="regUsername" placeholder="Username" />
-      <input type="email" id="regEmail" placeholder="Email" />
-      <button onclick="registerUser()">Register</button>
+  <!-- Register -->
+  <section id="register-section">
+    <h2>Register</h2>
+    <input id="reg-username" placeholder="Username">
+    <input id="reg-email" placeholder="Email">
+    <button onclick="register()">Register</button>
+  </section>
 
-      <h2>Login</h2>
-      <input type="email" id="loginEmail" placeholder="Email" />
-      <button onclick="loginUser()">Login</button>
+  <!-- Login -->
+  <section id="login-section">
+    <h2>Login</h2>
+    <input id="login-email" placeholder="Email">
+    <button onclick="login()">Login</button>
+  </section>
+
+  <!-- Game (hidden until login) -->
+  <section id="game-section" style="display:none;">
+    <h2>Welcome to Tic-Tac-Toe!</h2>
+    <div id="status"></div>
+
+    <div class="board" id="board"></div>
+
+    <div class="controls">
+      <button onclick="restartGame()">Restart Game</button>
+      <button onclick="simulateWin()">Simulate Win</button>
+      <button onclick="upgrade()">Upgrade</button>
+      <button onclick="withdraw()">Withdraw</button>
     </div>
-
-    <!-- Game Section -->
-    <div id="game" class="hidden">
-      <h2 id="welcomeMsg"></h2>
-      <div class="board" id="board"></div>
-      <p id="status"></p>
-      <button onclick="resetGame()">Restart Game</button>
-    </div>
-  </div>
+  </section>
 
   <script src="app.js"></script>
 </body>
