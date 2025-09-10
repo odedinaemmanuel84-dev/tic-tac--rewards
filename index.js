@@ -3,13 +3,8 @@ const cors = require("cors");
 
 const app = express();
 
-// ✅ Allow Netlify frontend to connect
-app.use(cors({
-  origin: "*", // Allow all origins (you can replace * with your Netlify URL for more security)
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"]
-}));
-
+// ✅ Simple CORS setup
+app.use(cors());
 app.use(express.json());
 
 // 🗂 In-memory users (temporary)
