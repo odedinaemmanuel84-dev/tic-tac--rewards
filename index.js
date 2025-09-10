@@ -4,18 +4,24 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Temporary in-memory database
+// Temporary in-memory "database"
 let users = [];
 
-app.use(cors());
 app.use(express.json());
 
-// Home route (to avoid "Cannot GET /")
+// ✅ Fix CORS so Netlify frontend can talk to Render backend
+app.use(cors({
+  origin: "*", // Allow all for testing, later you can replace with your Netlify URL
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"]
+}));
+
+// ✅ Home route (prevents "Cannot GET /")
 app.get("/", (req, res) => {
   res.send("✅ TicTacRewards backend is running!");
 });
 
-// Register route
+// ✅ Register route
 app.post("/register", (req, res) => {
   const { username, email, password } = req.body;
 
@@ -29,10 +35,11 @@ app.post("/register", (req, res) => {
   }
 
   users.push({ username, email, password });
+  console.log("Users:", users);
   res.json({ message: "User registered successfully!" });
 });
 
-// Login route
+// ✅ Login route
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -44,5 +51,5 @@ app.post("/login", (req, res) => {
   res.json({ message: "Login successful", username: user.username });
 });
 
-// Start server
+// ✅ Start server
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
