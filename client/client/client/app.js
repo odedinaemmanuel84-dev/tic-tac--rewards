@@ -1,7 +1,7 @@
 // app.js
 // If your backend is on another host (Render), set API_ROOT to that URL (no trailing slash), e.g.:
 // const API_ROOT = 'https://your-backend.onrender.com';
-const API_ROOT =
+const API_ROOT = https://tic-tac-rewards-2.onrender.com
 const API = (API_ROOT || '') + '/api';
 
 ///// UI elements /////
