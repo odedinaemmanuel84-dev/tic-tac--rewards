@@ -1,136 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TicTacRewards</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
+      background: #f5f6fa;
       margin: 0;
       padding: 0;
+      text-align: center;
     }
     .auth-box {
-      max-width: 400px;
-      margin: 20px auto;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 80px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
-    .auth-box h2 {
-      margin-bottom: 10px;
-    }
-    .auth-box input {
-      width: 90%;
+    input {
+      display: block;
+      margin: 10px auto;
       padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ddd;
-      border-radius: 5px;
+      width: 80%;
     }
-    .auth-box button {
-      width: 45%;
-      padding: 10px;
-      margin: 5px;
-      background: #28a745;
-      color: #fff;
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      background: #3498db;
       border: none;
       border-radius: 5px;
+      color: white;
       cursor: pointer;
-      font-size: 16px;
     }
-    .auth-box button:hover {
-      background: #218838;
+    button:hover {
+      background: #2980b9;
+    }
+    #authMessage {
+      margin-top: 10px;
+      color: red;
+    }
+    #game {
+      display: none;
+      margin-top: 50px;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-template-rows: repeat(3, 100px);
+      gap: 5px;
+      justify-content: center;
+    }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #ecf0f1;
+      font-size: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .cell.taken {
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
-  <h1>TicTacRewards</h1>
-
-  <!-- Sign in / Register Section -->
-  <div class="auth-box">
-    <h2>Sign in / Register</h2>
-    <input type="text" id="username" placeholder="Enter username">
-    <input type="email" id="email" placeholder="Enter email">
-    <input type="password" id="password" placeholder="Enter password">
-    <br>
+  <!-- Login / Register -->
+  <div class="auth-box" id="authBox">
+    <h2>Login / Register</h2>
+    <input type="text" id="username" placeholder="Username (for register only)">
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
     <button onclick="registerUser()">Register</button>
     <button onclick="loginUser()">Login</button>
-    <p id="authMessage"></p>
+    <div id="authMessage"></div>
   </div>
 
-  <!-- Game Section -->
-  <div id="game" style="display:none;">
-    <label><input type="checkbox" id="musicToggle"> Music</label>
-    <select id="mode">
-      <option value="ai">Play vs AI</option>
-      <option value="friend">Play vs Friend</option>
-    </select>
-    <div id="board"></div>
+  <!-- Game -->
+  <div id="game">
+    <h2 id="welcome"></h2>
+    <div class="board" id="board"></div>
+    <h3 id="status"></h3>
+    <button onclick="resetGame()">Restart Game</button>
+    <button onclick="logoutUser()">Logout</button>
   </div>
 
-  <script>
-    const API_URL = https://tic-tac-rewards-2.onrender.com
+<script>
+  const API_URL = https://tic-tac-rewards-2.onrender.com
 
-    async function registerUser() {
-      const username = document.getElementById("username").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  // Auto-login if user is saved
+  window.onload = function() {
+    const savedUser = localStorage.getItem("loggedInUser");
+    if (savedUser) {
+      showGame(savedUser);
+    }
+  };
 
-      if (!username || !email || !password) {
-        document.getElementById("authMessage").innerText = "Please fill in all fields.";
-        return;
-      }
+  // Register
+  async function registerUser() {
+    const username = document.getElementById("username").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-      try {
-        const response = await fetch(`${API_URL}/register`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, email, password })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          document.getElementById("authMessage").innerText = "✅ Registration successful! Please login.";
-        } else {
-          document.getElementById("authMessage").innerText = "❌ " + data.message;
-        }
-      } catch (err) {
-        document.getElementById("authMessage").innerText = "⚠️ Server error. Try again.";
-      }
+    if (!username || !email || !password) {
+      document.getElementById("authMessage").innerText = "Please fill all fields.";
+      return;
     }
 
-    async function loginUser() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+    try {
+      const response = await fetch(`${API_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password })
+      });
 
-      if (!email || !password) {
-        document.getElementById("authMessage").innerText = "Please fill in all fields.";
-        return;
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("loggedInUser", username);
+        showGame(username);
+      } else {
+        document.getElementById("authMessage").innerText = "❌ " + data.message;
       }
-
-      try {
-        const response = await fetch(`${API_URL}/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          document.getElementById("authMessage").innerText = "✅ Welcome back, " + data.username;
-          document.querySelector(".auth-box").style.display = "none";
-          document.getElementById("game").style.display = "block";
-        } else {
-          document.getElementById("authMessage").innerText = "❌ " + data.message;
-        }
-      } catch (err) {
-        document.getElementById("authMessage").innerText = "⚠️ Server error. Try again.";
-      }
+    } catch (err) {
+      document.getElementById("authMessage").innerText = "⚠️ Server error.";
     }
-  </script>
+  }
+
+  // Login
+  async function loginUser() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+      document.getElementById("authMessage").innerText = "Please fill all fields.";
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        localStorage.setItem("loggedInUser", data.username);
+        showGame(data.username);
+      } else {
+        document.getElementById("authMessage").innerText = "❌ " + data.message;
+      }
+    } catch (err) {
+      document.getElementById("authMessage").innerText = "⚠️ Server error.";
+    }
+  }
+
+  // Show Game
+  function showGame(username) {
+    document.getElementById("authBox").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    document.getElementById("welcome").innerText = `Welcome, ${username} 👋`;
+    document.getElementById("status").innerText = `It's ${username}'s turn (X)`;
+    initBoard();
+  }
+
+  // Logout
+  function logoutUser() {
+    localStorage.removeItem("loggedInUser");
+    document.getElementById("game").style.display = "none";
+    document.getElementById("authBox").style.display = "block";
+    document.getElementById("authMessage").innerText = "You have logged out.";
+    document.getElementById("username").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+  }
+
+  // Game logic
+  let board = ["", "", "", "", "", "", "", "", ""];
+  let currentPlayer = "X";
+  let gameActive = true;
+
+  function initBoard() {
+    const boardDiv = document.getElementById("board");
+    boardDiv.innerHTML = "";
+    board = ["", "", "", "", "", "", "", "", ""];
+    currentPlayer = "X";
+    gameActive = true;
+
+    board.forEach((_, index) => {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.addEventListener("click", () => handleMove(index, cell));
+      boardDiv.appendChild(cell);
+    });
+  }
+
+  function handleMove(index, cell) {
+    if (!gameActive || board[index] !== "") return;
+    board[index] = currentPlayer;
+    cell.innerText = currentPlayer;
+    cell.classList.add("taken");
+
+    if (checkWin()) {
+      document.getElementById("status").innerText = `${currentPlayer} wins! 🎉`;
+      gameActive = false;
+    } else if (!board.includes("")) {
+      document.getElementById("status").innerText = "Draw! 🤝";
+      gameActive = false;
+    } else {
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      document.getElementById("status").innerText = `It's ${currentPlayer}'s turn`;
+    }
+  }
+
+  function checkWin() {
+    const winPatterns = [
+      [0,1,2], [3,4,5], [6,7,8],
+      [0,3,6], [1,4,7], [2,5,8],
+      [0,4,8], [2,4,6]
+    ];
+    return winPatterns.some(pattern =>
+      pattern.every(i => board[i] === currentPlayer)
+    );
+  }
+
+  function resetGame() {
+    initBoard();
+    document.getElementById("status").innerText = `It's ${currentPlayer}'s turn`;
+  }
+</script>
 
 </body>
   </html>
