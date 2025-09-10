@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Temporary in-memory "database"
+// Temporary in-memory users (clears if server restarts)
 const users = [];
 
 // ✅ Test route
@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.json({ message: "✅ TicTacRewards backend is running!" });
 });
 
-// ✅ Register route
+// ✅ Register
 app.post("/register", (req, res) => {
   const { username, email, password } = req.body;
 
@@ -23,22 +23,18 @@ app.post("/register", (req, res) => {
     return res.status(400).json({ message: "All fields are required" });
   }
 
-  // Check if user exists
   const existingUser = users.find(u => u.email === email);
   if (existingUser) {
     return res.status(400).json({ message: "User already exists" });
   }
 
-  // Hash password
   const hashedPassword = bcrypt.hashSync(password, 8);
-
-  // Save user
   users.push({ username, email, password: hashedPassword });
 
   res.json({ message: "User registered successfully", username });
 });
 
-// ✅ Login route
+// ✅ Login
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -52,7 +48,6 @@ app.post("/login", (req, res) => {
     return res.status(400).json({ message: "Invalid password" });
   }
 
-  // Create JWT (for session management later)
   const token = jwt.sign({ email: user.email }, "secretkey", { expiresIn: "1h" });
 
   res.json({ message: "Login successful", username: user.username, token });
