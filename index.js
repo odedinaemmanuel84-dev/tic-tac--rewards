@@ -1,24 +1,19 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Temporary in-memory "database"
+app.use(cors());
+app.use(bodyParser.json());
+
+// 🛠 Dummy in-memory database (use real DB later)
 let users = [];
 
-app.use(express.json());
-
-// ✅ Fix CORS so Netlify frontend can talk to Render backend
-app.use(cors({
-  origin: "*", // Allow all for testing, later you can replace with your Netlify URL
-  methods: ["GET", "POST"],
-  allowedHeaders: ["Content-Type"]
-}));
-
-// ✅ Home route (prevents "Cannot GET /")
+// ✅ Test route
 app.get("/", (req, res) => {
-  res.send("✅ TicTacRewards backend is running!");
+  res.json({ message: "✅ TicTacRewards backend is running!" });
 });
 
 // ✅ Register route
@@ -26,30 +21,40 @@ app.post("/register", (req, res) => {
   const { username, email, password } = req.body;
 
   if (!username || !email || !password) {
-    return res.status(400).json({ message: "All fields required" });
+    return res.status(400).json({ success: false, message: "⚠️ All fields are required" });
   }
 
-  const existingUser = users.find(u => u.email === email);
-  if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
+  const userExists = users.find(u => u.email === email);
+  if (userExists) {
+    return res.status(400).json({ success: false, message: "❌ Email already registered" });
   }
 
-  users.push({ username, email, password });
-  console.log("Users:", users);
-  res.json({ message: "User registered successfully!" });
+  const newUser = { username, email, password };
+  users.push(newUser);
+
+  return res.status(201).json({ success: true, message: "✅ Registration successful! Please login." });
 });
 
 // ✅ Login route
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
-  const user = users.find(u => u.email === email && u.password === password);
-  if (!user) {
-    return res.status(400).json({ message: "Invalid email or password" });
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: "⚠️ Email and password are required" });
   }
 
-  res.json({ message: "Login successful", username: user.username });
+  const user = users.find(u => u.email === email && u.password === password);
+  if (!user) {
+    return res.status(401).json({ success: false, message: "❌ Invalid email or password" });
+  }
+
+  return res.json({
+    success: true,
+    message: "✅ Login successful!",
+    username: user.username
+  });
 });
 
-// ✅ Start server
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
