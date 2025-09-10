@@ -158,4 +158,4 @@ createBoard();
 function updateBalance() {
   document.getElementById("balance").textContent = 
     `Balance: ₦${currentUser.balance || 0} (Plan: ${currentUser.plan})`;
-}
+    }
