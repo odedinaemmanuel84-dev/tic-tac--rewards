@@ -1,5 +1,5 @@
 // 🌍 Replace with your real Render backend URL
-const API_ROOT = https://tic-tac-rewards-2.onrender.com
+const API_ROOT= https://tic-tac-rewards-2.onrender.com
 
 // ---------------- Game Variables ----------------
 let currentUser = null;
