@@ -1,16 +1,14 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
 const app = express();
-
-// ✅ Simple CORS setup
 app.use(cors());
 app.use(express.json());
 
-// 🗂 In-memory users (temporary)
+// 🗂 In-memory users (temporary storage)
 let users = [];
 
-// ✅ Home route
+// ✅ Home route (fix for "Cannot GET /")
 app.get("/", (req, res) => {
   res.send("🎮 Tic-Tac-Toe Rewards Backend is running!");
 });
