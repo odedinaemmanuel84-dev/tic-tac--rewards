@@ -1,5 +1,5 @@
 // 🔗 Replace with your Render backend URL
-const SERVER_URL = "https://your-render-app.onrender.com";
+const SERVER_URL = https://tic-tac-rewards-1.onrender.com
 
 // 🎵 Sounds
 const moveSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
