@@ -1,5 +1,3 @@
-
-// Replace with your actual Render backend link
 const API_ROOT = https://tic-tac-rewards-1.onrender.com
 
 // Register new player
