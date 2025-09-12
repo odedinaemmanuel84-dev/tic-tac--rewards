@@ -4,12 +4,17 @@ import bodyParser from "body-parser";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET; // Put in Render environment
+const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET; // Add in Render environment
 
 app.use(cors());
 app.use(bodyParser.json());
 
-// In-memory storage (temporary)
+// ✅ Root route for browser check
+app.get("/", (req, res) => {
+  res.send("🎉 TicTacToe Rewards Backend is running!");
+});
+
+// In-memory storage
 let users = [];
 
 /** Register a new user */
