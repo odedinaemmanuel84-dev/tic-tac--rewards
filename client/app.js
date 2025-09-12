@@ -1,4 +1,4 @@
-const API_ROOT = "https://your-backend.onrender.com"; // replace after Render deploy
+const API_ROOT = https://tic-tac-rewards-1.onrender.com
 let currentUser = null;
 
 function registerUser() {
