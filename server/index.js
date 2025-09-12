@@ -1,83 +1,166 @@
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
+const express = require('express');
+const cors = require('cors');
+const fetch = require('node-fetch');
+const mongoose = require('mongoose');
 
+require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET; // Add in Render environment
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-// ✅ Root route for browser check
-app.get("/", (req, res) => {
-  res.send("🎉 TicTacToe Rewards Backend is running!");
+// --- MongoDB User Model ---
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+.then(()=>console.log("MongoDB connected"))
+.catch(err=>console.error(err));
+
+const userSchema = new mongoose.Schema({
+    name: String,
+    email: { type: String, unique: true },
+    balance: { type: Number, default: 0 },
+    playsLeft: { type: Number, default: 1 }, // demo plays
+    premium: { type: Boolean, default: false }
 });
 
-// In-memory storage
-let users = [];
+const User = mongoose.model("User", userSchema);
 
-/** Register a new user */
-app.post("/register", (req, res) => {
-  const { name, email } = req.body;
-  if (!name || !email) return res.status(400).json({ error: "Missing data" });
+// --- PAYSTACK ---
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
 
-  if (!users.find(u => u.email === email)) {
-    users.push({ name, email, balance: 0 });
-  }
-  res.json({ message: "User registered successfully" });
-});
-
-/** Simulate win */
-app.post("/win", (req, res) => {
-  const { email } = req.body;
-  const user = users.find(u => u.email === email);
-
-  if (!user) return res.status(404).json({ error: "User not found" });
-
-  user.balance += 400; // reward
-  res.json({ reward: 400, balance: user.balance });
-});
-
-/** Withdraw */
-app.post("/withdraw", async (req, res) => {
-  const { email, account, bank } = req.body;
-  const user = users.find(u => u.email === email);
-
-  if (!user) return res.status(404).json({ error: "User not found" });
-  if (user.balance < 400) return res.json({ message: "Not enough balance" });
-
-  try {
-    // Example payout (disabled for demo)
-    /*
-    const response = await fetch("https://api.paystack.co/transfer", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        source: "balance",
-        amount: user.balance * 100, // Paystack uses kobo
-        recipient: account,
-        reason: "TicTacToe reward",
-      }),
-    });
-    const payout = await response.json();
-    */
-
-    // Fake response for demo
-    const payout = { status: "success" };
-
-    if (payout.status === "success") {
-      user.balance = 0;
-      res.json({ message: "Withdrawal successful!" });
-    } else {
-      res.json({ message: "Withdrawal failed" });
+// --- REGISTER / LOGIN ---
+app.post("/api/register", async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        let user = await User.findOne({ email });
+        if(!user) {
+            user = new User({ name, email, balance:0, playsLeft:1, premium:false });
+            await user.save();
+        }
+        res.json(user);
+    } catch(err){
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
     }
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 });
 
-app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
+// --- WIN / REWARD ---
+app.post("/api/win", async (req,res)=>{
+    try{
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+        if(!user) return res.json({ status:"error", message:"User not found" });
+
+        let reward = 400; // demo default
+        if(user.premium) reward = 400 + (user.playsLeft * 50); // example premium reward
+
+        user.balance += reward;
+        user.playsLeft = user.premium ? user.playsLeft : 1; // reset demo plays
+        await user.save();
+
+        res.json({ balance:user.balance, playsLeft:user.playsLeft });
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ status:"error", message:"Server error" });
+    }
+});
+
+// --- UPGRADE TO PREMIUM ---
+app.post("/api/upgrade", async (req,res)=>{
+    try{
+        const { email, amount } = req.body;
+        const user = await User.findOne({ email });
+        if(!user) return res.json({ status:"error", message:"User not found" });
+
+        // Initiate Paystack transaction
+        const initRes = await fetch("https://api.paystack.co/transaction/initialize", {
+            method:"POST",
+            headers:{
+                Authorization:`Bearer ${PAYSTACK_SECRET_KEY}`,
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+                email: user.email,
+                amount: amount * 100, // Paystack expects kobo
+                currency: "NGN",
+                callback_url: `${process.env.FRONTEND_URL}/`
+            })
+        });
+        const data = await initRes.json();
+        if(data.status){
+            user.premium = true;
+            user.playsLeft = 10; // example premium plays
+            await user.save();
+            res.json({ authorization_url: data.data.authorization_url });
+        }else{
+            res.json({ status:"error", message:"Could not initialize payment" });
+        }
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ status:"error", message:"Server error" });
+    }
+});
+
+// --- RESOLVE BANK ACCOUNT ---
+async function resolveBankAccount(account_number){
+    const res = await fetch(`https://api.paystack.co/bank/resolve?account_number=${account_number}&bank_code=057`, {
+        method:"GET",
+        headers:{ Authorization:`Bearer ${PAYSTACK_SECRET_KEY}`, "Content-Type":"application/json" }
+    });
+    const data = await res.json();
+    if(!data.status) throw new Error("Could not resolve bank account");
+    return data.data;
+}
+
+// --- WITHDRAW ---
+app.post("/api/withdraw", async (req,res)=>{
+    try{
+        const { email, account_number, account_name } = req.body;
+        const user = await User.findOne({ email });
+        if(!user || user.balance <= 0) return res.json({ status:"error", message:"No balance to withdraw" });
+
+        // Resolve account (simplified)
+        const bankData = await resolveBankAccount(account_number);
+
+        // Create recipient
+        const recipientRes = await fetch("https://api.paystack.co/transferrecipient",{
+            method:"POST",
+            headers:{ Authorization:`Bearer ${PAYSTACK_SECRET_KEY}`, "Content-Type":"application/json" },
+            body: JSON.stringify({
+                type:"nuban",
+                name: account_name,
+                account_number: account_number,
+                bank_code: bankData.bank_code,
+                currency: "NGN"
+            })
+        });
+        const recipientData = await recipientRes.json();
+        if(!recipientData.status) throw new Error("Recipient creation failed");
+
+        // Transfer
+        const transferRes = await fetch("https://api.paystack.co/transfer",{
+            method:"POST",
+            headers:{ Authorization:`Bearer ${PAYSTACK_SECRET_KEY}`, "Content-Type":"application/json" },
+            body: JSON.stringify({
+                source:"balance",
+                reason:"Tic-Tac-Toe Reward",
+                amount:user.balance*100,
+                recipient: recipientData.data.recipient_code
+            })
+        });
+        const transferData = await transferRes.json();
+        if(!transferData.status) throw new Error("Transfer failed");
+
+        user.balance=0;
+        await user.save();
+        res.json({ status:"success", message:"Withdrawal successful" });
+
+    }catch(err){
+        console.error(err);
+        res.status(500).json({ status:"error", message: err.message });
+    }
+});
+
+// --- START SERVER ---
+app.listen(PORT, ()=> console.log(`Backend running on port ${PORT}`));
