@@ -1,4 +1,4 @@
-const API_ROOT = "https://your-backend-name.onrender.com"; // Replace with your Render URL
+const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
 
 let currentUser = null;
 let boardState = Array(9).fill("");
