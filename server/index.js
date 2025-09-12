@@ -1,69 +1,62 @@
-import express from "express";
-import cors from "cors";
-import axios from "axios";
-import dotenv from "dotenv";
-
-dotenv.config();
+// index.js
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-// ✅ Paystack secret key from Render Environment Variables
-const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET;
+const PORT = process.env.PORT || 3000;
 
-// Test route
+let users = {};
+
+// Test root
 app.get("/", (req, res) => {
-  res.send("🎮 Tic Tac Toe Reward Server Running...");
+  res.json({ message: "Backend working ✅" });
 });
 
-// ✅ Create Payment
-app.post("/api/pay", async (req, res) => {
-  try {
-    const { email, amount } = req.body;
-
-    const response = await axios.post(
-      "https://api.paystack.co/transaction/initialize",
-      {
-        email,
-        amount: amount * 100, // Paystack uses kobo
-        currency: "NGN"
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
-
-    res.json(response.data);
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).json({ error: "Payment initialization failed" });
+// Register
+app.post("/api/register", (req, res) => {
+  const { name, email } = req.body;
+  if (!users[email]) {
+    users[email] = { name, balance: 0, playsLeft: 3, premium: false };
   }
+  res.json(users[email]);
 });
 
-// ✅ Verify Payment
-app.get("/api/verify/:reference", async (req, res) => {
-  try {
-    const { reference } = req.params;
+// Win
+app.post("/api/win", (req, res) => {
+  const { email } = req.body;
+  if (!users[email]) return res.status(404).json({ error: "User not found" });
 
-    const response = await axios.get(
-      `https://api.paystack.co/transaction/verify/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET}`
-        }
-      }
-    );
-
-    res.json(response.data);
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).json({ error: "Verification failed" });
+  if (!users[email].premium) {
+    if (users[email].playsLeft <= 0) {
+      return res.json({ message: "No demo plays left" });
+    }
+    users[email].playsLeft--;
   }
+
+  let reward = users[email].premium ? 400 : 0;
+  users[email].balance += reward;
+
+  res.json(users[email]);
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+// Upgrade (fake demo for now)
+app.post("/api/upgrade", (req, res) => {
+  const { email } = req.body;
+  if (!users[email]) return res.status(404).json({ error: "User not found" });
+  users[email].premium = true;
+  res.json({ message: "User upgraded to premium" });
+});
+
+// Withdraw (fake demo for now)
+app.post("/api/withdraw", (req, res) => {
+  const { email } = req.body;
+  if (!users[email]) return res.status(404).json({ error: "User not found" });
+  users[email].balance = 0;
+  res.json({ success: true, message: "Withdrawal simulated" });
+});
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
