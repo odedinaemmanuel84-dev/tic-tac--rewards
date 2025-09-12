@@ -1,4 +1,4 @@
-const API_ROOT = https://tic-tac-rewards-1.onrender.com
+const API_ROOT = "https://your-backend-url.onrender.com"; // replace with real Render URL
 let currentUser = null;
 
 function registerUser() {
@@ -43,8 +43,7 @@ function simulateWin() {
   })
     .then(r => r.json())
     .then(data => {
-      currentUser.balance = data.balance;
-      currentUser.playsLeft = data.playsLeft;
+      currentUser = data;
       updateStatus();
     });
 }
@@ -53,27 +52,25 @@ function upgrade() {
   fetch(`${API_ROOT}/api/upgrade`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: currentUser.email, amount: 500 })
+    body: JSON.stringify({ email: currentUser.email })
   })
     .then(r => r.json())
     .then(data => {
-      if (data.authorization_url) {
-        window.open(data.authorization_url, "_blank");
-      }
+      alert(data.message);
+      currentUser.premium = true;
+      updateStatus();
     });
 }
 
 function withdraw() {
-  const account = prompt("Enter your bank account number:");
-  const bank = prompt("Enter your bank code (e.g. 058 for GTB):");
   fetch(`${API_ROOT}/api/withdraw`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: currentUser.email, account_number: account, bank_code: bank })
+    body: JSON.stringify({ email: currentUser.email })
   })
     .then(r => r.json())
     .then(data => {
-      alert(JSON.stringify(data));
+      alert(data.message);
       currentUser.balance = 0;
       updateStatus();
     });
