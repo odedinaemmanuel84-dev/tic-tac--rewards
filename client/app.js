@@ -1,111 +1,80 @@
-// 🔗 Replace with your Render backend URL
-const SERVER_URL = https://tic-tac-rewards-1.onrender.com
+const API_ROOT = "https://your-backend.onrender.com"; // replace after Render deploy
+let currentUser = null;
 
-// 🎵 Sounds
-const moveSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
-const winSound = new Audio("https://www.fesliyanstudios.com/play-mp3/438");
+function registerUser() {
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  fetch(`${API_ROOT}/api/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email })
+  })
+    .then(r => r.json())
+    .then(data => {
+      currentUser = data;
+      document.getElementById("register").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      updateStatus();
+      drawBoard();
+    });
+}
 
-// 🎮 Game setup
-const board = document.getElementById("game-board");
-let currentPlayer = "X";
-let cells = Array(9).fill(null);
-let againstAI = false;
-
-// Create the board
-function createBoard() {
+function drawBoard() {
+  const board = document.getElementById("board");
   board.innerHTML = "";
-  cells = Array(9).fill(null);
-  currentPlayer = "X";
-
   for (let i = 0; i < 9; i++) {
-    const cell = document.createElement("div");
-    cell.classList.add("cell");
-    cell.dataset.index = i;
-    cell.addEventListener("click", handleMove);
+    let cell = document.createElement("div");
+    cell.className = "cell";
+    cell.textContent = "";
     board.appendChild(cell);
   }
 }
 
-function handleMove(e) {
-  const index = e.target.dataset.index;
-  if (!cells[index]) {
-    cells[index] = currentPlayer;
-    e.target.textContent = currentPlayer;
-    moveSound.play();
-
-    if (checkWinner()) {
-      winSound.play();
-      setTimeout(() => alert(`${currentPlayer} wins!`), 200);
-      return;
-    }
-
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-
-    if (againstAI && currentPlayer === "O") {
-      setTimeout(aiMove, 500);
-    }
-  }
+function updateStatus() {
+  document.getElementById("status").textContent =
+    `Balance: ₦${currentUser.balance} | Plays Left: ${currentUser.playsLeft} | Premium: ${currentUser.premium}`;
 }
 
-function aiMove() {
-  const emptyCells = cells.map((val, i) => (val ? null : i)).filter(i => i !== null);
-  if (emptyCells.length === 0) return;
-  const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-  const cellElement = document.querySelector(`[data-index='${randomIndex}']`);
-  cellElement.click();
-}
-
-function checkWinner() {
-  const winPatterns = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-  return winPatterns.some(pattern => {
-    const [a,b,c] = pattern;
-    return cells[a] && cells[a] === cells[b] && cells[a] === cells[c];
-  });
-}
-
-// 💸 Payments
-async function payAndPlay(amount) {
-  const email = prompt("Enter your email to play:");
-  if (!email) return;
-
-  try {
-    const response = await fetch(`${SERVER_URL}/api/pay`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, amount })
+function simulateWin() {
+  fetch(`${API_ROOT}/api/win`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: currentUser.email })
+  })
+    .then(r => r.json())
+    .then(data => {
+      currentUser.balance = data.balance;
+      currentUser.playsLeft = data.playsLeft;
+      updateStatus();
     });
-
-    const data = await response.json();
-    console.log("Payment init:", data);
-
-    if (data.status === true) {
-      window.location.href = data.data.authorization_url;
-    } else {
-      alert("Payment failed, try again.");
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Error connecting to server.");
-  }
 }
 
-// 🎮 Demo & Premium
-function startDemo() {
-  payAndPlay(500); // fixed ₦500
+function upgrade() {
+  fetch(`${API_ROOT}/api/upgrade`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: currentUser.email, amount: 500 })
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.authorization_url) {
+        window.open(data.authorization_url, "_blank");
+      }
+    });
 }
 
-function startPremium() {
-  const amount = parseInt(prompt("Enter amount between 500 – 5000:"), 10);
-  if (isNaN(amount) || amount < 500 || amount > 5000) {
-    alert("Invalid amount!");
-    return;
-  }
-  payAndPlay(amount);
+function withdraw() {
+  const account = prompt("Enter your bank account number:");
+  const bank = prompt("Enter your bank code (e.g. 058 for GTB):");
+  fetch(`${API_ROOT}/api/withdraw`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: currentUser.email, account_number: account, bank_code: bank })
+  })
+    .then(r => r.json())
+    .then(data => {
+      alert(JSON.stringify(data));
+      currentUser.balance = 0;
+      updateStatus();
+    });
 }
-
-// Load first board
-createBoard();
