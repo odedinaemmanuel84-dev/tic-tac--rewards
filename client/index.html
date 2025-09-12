@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tic-Tac-Toe Rewards</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -9,23 +10,42 @@
   <div class="container">
     <h1>Tic-Tac-Toe Rewards</h1>
 
-    <!-- Registration Form -->
-    <div id="register" class="card">
-      <h2>Register to Play</h2>
-      <input type="text" id="name" placeholder="Your Name" />
-      <input type="email" id="email" placeholder="Your Email" />
-      <button onclick="registerUser()">Register</button>
+    <!-- Login & Register Side by Side -->
+    <div id="auth-card" class="card flex-row">
+      <div class="auth-section">
+        <h2>Login</h2>
+        <input type="email" id="login-email" placeholder="Email">
+        <button onclick="loginUser()">Login</button>
+      </div>
+      <div class="auth-section">
+        <h2>Register</h2>
+        <input type="text" id="register-name" placeholder="Name">
+        <input type="email" id="register-email" placeholder="Email">
+        <button onclick="registerUser()">Register</button>
+      </div>
     </div>
 
     <!-- Game Area -->
-    <div id="game" class="card" style="display:none;">
-      <p id="status"></p>
+    <div id="game-card" class="card" style="display:none;">
+      <div class="user-info">
+        <span id="user-name"></span> | 
+        <span id="user-balance"></span> | 
+        <span id="user-plays"></span> | 
+        <span id="user-premium"></span>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
       <div class="board" id="board"></div>
-      <button onclick="simulateWin()">🎉 Simulate Win</button>
-      <button onclick="upgrade()">💎 Upgrade (₦500+)</button>
-      <button onclick="withdraw()">💵 Withdraw</button>
+      <div class="game-actions">
+        <button onclick="restartGame()">Restart Game</button>
+        <button onclick="upgrade()">Upgrade (₦500+)</button>
+        <button onclick="withdraw()">Withdraw</button>
+      </div>
     </div>
+
+    <audio id="click-sound" src="click.mp3"></audio>
+    <audio id="win-sound" src="win.mp3"></audio>
+
   </div>
   <script src="app.js"></script>
 </body>
-</html>
+          </html>
