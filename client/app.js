@@ -1,4 +1,4 @@
-const API_ROOT = https://tic-tac-rewards-1.onrender.com
+const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
 
 // Register new player
 async function registerUser() {
