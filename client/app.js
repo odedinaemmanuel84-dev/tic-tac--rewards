@@ -1,4 +1,4 @@
-const API_ROOT = https://tic-tac-rewards-1.onrender.com/
+const API_ROOT = https://tic-tac-rewards-1.onrender.com
 let currentUser = null;
 
 function registerUser() {
