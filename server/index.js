@@ -11,6 +11,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// --- HOMEPAGE ---
+app.get("/", (req, res) => {
+  res.send("🎮 Tic-Tac-Toe Backend is running! Use /api/register, /api/win, /api/upgrade, /api/withdraw");
+});
+
 // --- MongoDB setup ---
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=>console.log("MongoDB connected"))
@@ -124,7 +129,6 @@ app.post("/api/withdraw", async (req,res)=>{
 
         const bankData = await resolveBankAccount(account_number);
 
-        // Create recipient
         const recipientRes = await fetch("https://api.paystack.co/transferrecipient",{
             method:"POST",
             headers:{
@@ -142,7 +146,6 @@ app.post("/api/withdraw", async (req,res)=>{
         const recipientData = await recipientRes.json();
         if(!recipientData.status) throw new Error("Recipient creation failed");
 
-        // Transfer
         const transferRes = await fetch("https://api.paystack.co/transfer",{
             method:"POST",
             headers:{
