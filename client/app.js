@@ -1,60 +1,111 @@
-const API_ROOT = https://tic-tac-rewards-1.onrender.com
-let userId = null;
+// 🔗 Replace with your Render backend URL
+const SERVER_URL = "https://your-render-app.onrender.com";
 
-// Register
-document.getElementById("register").onclick = async () => {
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const res = await fetch(`${API_ROOT}/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, email })
-  });
-  const data = await res.json();
-  userId = data.id;
-  document.getElementById("status").innerText = "Registered as " + data.name;
-};
+// 🎵 Sounds
+const moveSound = new Audio("https://www.fesliyanstudios.com/play-mp3/387");
+const winSound = new Audio("https://www.fesliyanstudios.com/play-mp3/438");
 
-// Play
-document.getElementById("play").onclick = async () => {
-  const res = await fetch(`${API_ROOT}/play`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId })
-  });
-  const data = await res.json();
-  document.getElementById("status").innerText = data.message;
-};
+// 🎮 Game setup
+const board = document.getElementById("game-board");
+let currentPlayer = "X";
+let cells = Array(9).fill(null);
+let againstAI = false;
 
-// Win
-document.getElementById("win").onclick = async () => {
-  const res = await fetch(`${API_ROOT}/win`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, reward: 400 })
-  });
-  const data = await res.json();
-  document.getElementById("status").innerText = "Balance: " + data.balance;
-};
+// Create the board
+function createBoard() {
+  board.innerHTML = "";
+  cells = Array(9).fill(null);
+  currentPlayer = "X";
 
-// Upgrade
-document.getElementById("upgrade").onclick = async () => {
-  const res = await fetch(`${API_ROOT}/upgrade`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, amount: 500, currency: "NGN" })
-  });
-  const data = await res.json();
-  document.getElementById("status").innerText = data.message || "Upgraded";
-};
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+    cell.dataset.index = i;
+    cell.addEventListener("click", handleMove);
+    board.appendChild(cell);
+  }
+}
 
-// Withdraw
-document.getElementById("withdraw").onclick = async () => {
-  const res = await fetch(`${API_ROOT}/withdraw`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, bankCode: "058", accountNumber: "1234567890", amount: 400 })
+function handleMove(e) {
+  const index = e.target.dataset.index;
+  if (!cells[index]) {
+    cells[index] = currentPlayer;
+    e.target.textContent = currentPlayer;
+    moveSound.play();
+
+    if (checkWinner()) {
+      winSound.play();
+      setTimeout(() => alert(`${currentPlayer} wins!`), 200);
+      return;
+    }
+
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+    if (againstAI && currentPlayer === "O") {
+      setTimeout(aiMove, 500);
+    }
+  }
+}
+
+function aiMove() {
+  const emptyCells = cells.map((val, i) => (val ? null : i)).filter(i => i !== null);
+  if (emptyCells.length === 0) return;
+  const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+  const cellElement = document.querySelector(`[data-index='${randomIndex}']`);
+  cellElement.click();
+}
+
+function checkWinner() {
+  const winPatterns = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  return winPatterns.some(pattern => {
+    const [a,b,c] = pattern;
+    return cells[a] && cells[a] === cells[b] && cells[a] === cells[c];
   });
-  const data = await res.json();
-  document.getElementById("status").innerText = data.message;
-};
+}
+
+// 💸 Payments
+async function payAndPlay(amount) {
+  const email = prompt("Enter your email to play:");
+  if (!email) return;
+
+  try {
+    const response = await fetch(`${SERVER_URL}/api/pay`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, amount })
+    });
+
+    const data = await response.json();
+    console.log("Payment init:", data);
+
+    if (data.status === true) {
+      window.location.href = data.data.authorization_url;
+    } else {
+      alert("Payment failed, try again.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error connecting to server.");
+  }
+}
+
+// 🎮 Demo & Premium
+function startDemo() {
+  payAndPlay(500); // fixed ₦500
+}
+
+function startPremium() {
+  const amount = parseInt(prompt("Enter amount between 500 – 5000:"), 10);
+  if (isNaN(amount) || amount < 500 || amount > 5000) {
+    alert("Invalid amount!");
+    return;
+  }
+  payAndPlay(amount);
+}
+
+// Load first board
+createBoard();
