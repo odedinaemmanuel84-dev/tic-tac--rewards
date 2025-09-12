@@ -1,8 +1,6 @@
-
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import fetch from "node-fetch";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -11,7 +9,7 @@ const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET; // Put in Render environmen
 app.use(cors());
 app.use(bodyParser.json());
 
-// In-memory storage (use database later)
+// In-memory storage (temporary)
 let users = [];
 
 /** Register a new user */
@@ -32,11 +30,11 @@ app.post("/win", (req, res) => {
 
   if (!user) return res.status(404).json({ error: "User not found" });
 
-  user.balance += 400; // Reward
+  user.balance += 400; // reward
   res.json({ reward: 400, balance: user.balance });
 });
 
-/** Withdraw request */
+/** Withdraw */
 app.post("/withdraw", async (req, res) => {
   const { email, account, bank } = req.body;
   const user = users.find(u => u.email === email);
@@ -45,7 +43,7 @@ app.post("/withdraw", async (req, res) => {
   if (user.balance < 400) return res.json({ message: "Not enough balance" });
 
   try {
-    // Example payout call to Paystack (disabled for demo)
+    // Example payout (disabled for demo)
     /*
     const response = await fetch("https://api.paystack.co/transfer", {
       method: "POST",
@@ -55,14 +53,16 @@ app.post("/withdraw", async (req, res) => {
       },
       body: JSON.stringify({
         source: "balance",
-        amount: user.balance * 100, // kobo
+        amount: user.balance * 100, // Paystack uses kobo
         recipient: account,
         reason: "TicTacToe reward",
       }),
     });
+    const payout = await response.json();
     */
 
-    const payout = { status: "success" }; // fake response
+    // Fake response for demo
+    const payout = { status: "success" };
 
     if (payout.status === "success") {
       user.balance = 0;
@@ -75,4 +75,4 @@ app.post("/withdraw", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(`✅ Backend running on port ${PORT}`));
