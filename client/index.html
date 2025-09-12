@@ -2,24 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tic Tac Toe Rewards</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Tic-Tac-Toe Rewards</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🎮 Tic Tac Toe Rewards</h1>
+  <h1>Tic-Tac-Toe Rewards</h1>
 
-  <!-- Game mode selection -->
-  <div class="menu">
-    <button onclick="startDemo()">Play Demo (₦500)</button>
-    <button onclick="startPremium()">Play Premium (₦500 – ₦5000)</button>
+  <div id="register">
+    <input type="text" id="name" placeholder="Your Name" />
+    <input type="email" id="email" placeholder="Your Email" />
+    <button onclick="registerUser()">Register</button>
   </div>
 
-  <!-- Game board -->
-  <div id="game-board"></div>
-
-  <!-- Restart -->
-  <button onclick="createBoard()">Restart Game</button>
+  <div id="game" style="display:none;">
+    <p id="status"></p>
+    <div class="board" id="board"></div>
+    <button onclick="simulateWin()">Simulate Win</button>
+    <button onclick="upgrade()">Upgrade (₦500)</button>
+    <button onclick="withdraw()">Withdraw</button>
+  </div>
 
   <script src="app.js"></script>
 </body>
