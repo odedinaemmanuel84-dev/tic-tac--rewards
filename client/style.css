@@ -1,74 +1,33 @@
-
-/* General layout */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+  margin:0; padding:0;
+  display:flex; justify-content:center; align-items:center;
+  min-height:100vh;
+  background: linear-gradient(135deg,#74ebd5,#ACB6E5);
 }
 
-/* Centered container */
-.container {
-  text-align: center;
-  width: 100%;
-  max-width: 500px;
+.container { text-align:center; width:100%; max-width:500px; }
+
+.card { background:#fff; border-radius:12px; padding:20px; margin-top:20px; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+
+.flex-row { display:flex; justify-content:space-between; flex-wrap:wrap; }
+.auth-section { flex:1; min-width:150px; margin:5px; }
+
+input { display:block; margin:10px auto; padding:10px; width:90%; border-radius:8px; border:1px solid #ccc; }
+button { margin:5px; padding:10px 15px; border:none; border-radius:8px; cursor:pointer; background:#4CAF50; color:white; font-size:1rem; transition:0.3s; }
+button:hover { background:#45a049; }
+
+.board { display:grid; grid-template-columns:repeat(3,100px); gap:8px; justify-content:center; margin:20px auto; }
+.cell { width:100px; height:100px; background:#f9f9f9; border:2px solid #333; border-radius:8px; font-size:2rem; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:0.2s; }
+.cell.win { background:#ffd700; }
+
+@media(max-width:400px){
+  .board { grid-template-columns:repeat(3,80px); gap:5px; }
+  .cell { width:80px; height:80px; font-size:1.5rem; }
 }
 
-/* Card style for sections */
-.card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-top: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
+.user-info { text-align:center; margin-bottom:10px; }
+.logout-btn { background:#f44336; margin-left:10px; }
+.logout-btn:hover { background:#d32f2f; }
 
-/* Game board */
-.board {
-  display: grid;
-  grid-template-columns: repeat(3, 100px);
-  gap: 8px;
-  justify-content: center;
-  margin: 20px auto;
-}
-.cell {
-  width: 100px;
-  height: 100px;
-  background: #f9f9f9;
-  border: 2px solid #333;
-  border-radius: 8px;
-  font-size: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-/* Buttons */
-button {
-  margin: 5px;
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: #4CAF50;
-  color: white;
-  font-size: 1rem;
-  transition: background 0.3s;
-}
-button:hover {
-  background: #45a049;
-}
-
-input {
-  display: block;
-  margin: 10px auto;
-  padding: 10px;
-  width: 90%;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+.game-actions { margin-top:10px; }
