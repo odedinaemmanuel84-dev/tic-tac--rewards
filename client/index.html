@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tic-Tac-Toe Rewards</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Tic-Tac-Toe Rewards</h1>
+
+    <!-- Registration Form -->
+    <div id="register" class="card">
+      <h2>Register to Play</h2>
+      <input type="text" id="name" placeholder="Your Name" />
+      <input type="email" id="email" placeholder="Your Email" />
+      <button onclick="registerUser()">Register</button>
+    </div>
+
+    <!-- Game Area -->
+    <div id="game" class="card" style="display:none;">
+      <p id="status"></p>
+      <div class="board" id="board"></div>
+      <button onclick="simulateWin()">🎉 Simulate Win</button>
+      <button onclick="upgrade()">💎 Upgrade (₦500+)</button>
+      <button onclick="withdraw()">💵 Withdraw</button>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
