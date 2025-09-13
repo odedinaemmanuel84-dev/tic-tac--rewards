@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modern Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Tic-Tac-Toe Modern</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 🔹 Auth Section -->
   <div id="auth-container">
-    <div class="form-box">
+    <h1>Tic-Tac-Toe Modern</h1>
+
+    <div id="register-box">
       <h2>Register</h2>
-      <input type="text" id="registerName" placeholder="Full Name">
+      <input type="text" id="registerName" placeholder="Name">
       <input type="email" id="registerEmail" placeholder="Email">
       <input type="password" id="registerPassword" placeholder="Password">
       <button onclick="register()">Register</button>
     </div>
 
-    <div class="form-box">
+    <div id="login-box">
       <h2>Login</h2>
       <input type="email" id="loginEmail" placeholder="Email">
       <input type="password" id="loginPassword" placeholder="Password">
@@ -24,29 +27,36 @@
     </div>
   </div>
 
+  <!-- 🔹 Game Section -->
   <div id="game-container" class="hidden">
-    <h2>🎮 Modern Game</h2>
+    <h2 id="status">Welcome</h2>
     <button onclick="logout()">Logout</button>
-    <p id="status"></p>
-
-    <div class="game-board">
-      <canvas id="gameCanvas" width="400" height="400"></canvas>
-    </div>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
 
     <div class="controls">
       <button onclick="playWithAI()">Play vs AI</button>
       <button onclick="playOffline()">Offline Multiplayer</button>
-      <button onclick="nextLevel()">Next Level</button>
+      <button onclick="nextLevel()">Unlock Level</button>
+    </div>
+
+    <!-- 🔹 Withdraw Section -->
+    <div id="withdraw-box">
+      <h3>Withdraw Rewards</h3>
+      <input type="number" id="withdrawAmount" placeholder="Amount">
+      <input type="text" id="withdrawAccount" placeholder="Bank Account Number">
+      <input type="text" id="withdrawBank" placeholder="Bank Name">
+      <button onclick="withdrawFunds()">Withdraw</button>
     </div>
   </div>
 
+  <!-- 🔹 Audio -->
   <audio id="bg-music" loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="https://cdn.pixabay.com/download/audio/2023/01/10/audio_coolgame.mp3?filename=background-music.mp3" type="audio/mpeg">
   </audio>
   <audio id="click-sound">
-    <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_click.mp3?filename=click.mp3" type="audio/mpeg">
   </audio>
 
   <script src="script.js"></script>
 </body>
-</html>
+                            </html>
