@@ -1,51 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic-Tac-Toe Rewards</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Modern Game</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Tic-Tac-Toe Rewards</h1>
-
-    <!-- Login & Register Side by Side -->
-    <div id="auth-card" class="card flex-row">
-      <div class="auth-section">
-        <h2>Login</h2>
-        <input type="email" id="login-email" placeholder="Email">
-        <button onclick="loginUser()">Login</button>
-      </div>
-      <div class="auth-section">
-        <h2>Register</h2>
-        <input type="text" id="register-name" placeholder="Name">
-        <input type="email" id="register-email" placeholder="Email">
-        <button onclick="registerUser()">Register</button>
-      </div>
+  <div id="auth-container">
+    <div class="form-box">
+      <h2>Register</h2>
+      <input type="text" id="registerName" placeholder="Full Name">
+      <input type="email" id="registerEmail" placeholder="Email">
+      <input type="password" id="registerPassword" placeholder="Password">
+      <button onclick="register()">Register</button>
     </div>
 
-    <!-- Game Area -->
-    <div id="game-card" class="card" style="display:none;">
-      <div class="user-info">
-        <span id="user-name"></span> | 
-        <span id="user-balance"></span> | 
-        <span id="user-plays"></span> | 
-        <span id="user-premium"></span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </div>
-      <div class="board" id="board"></div>
-      <div class="game-actions">
-        <button onclick="restartGame()">Restart Game</button>
-        <button onclick="upgrade()">Upgrade (₦500+)</button>
-        <button onclick="withdraw()">Withdraw</button>
-      </div>
+    <div class="form-box">
+      <h2>Login</h2>
+      <input type="email" id="loginEmail" placeholder="Email">
+      <input type="password" id="loginPassword" placeholder="Password">
+      <button onclick="login()">Login</button>
     </div>
-
-    <audio id="click-sound" src="click.mp3"></audio>
-    <audio id="win-sound" src="win.mp3"></audio>
-
   </div>
-  <script src="app.js"></script>
+
+  <div id="game-container" class="hidden">
+    <h2>🎮 Modern Game</h2>
+    <button onclick="logout()">Logout</button>
+    <p id="status"></p>
+
+    <div class="game-board">
+      <canvas id="gameCanvas" width="400" height="400"></canvas>
+    </div>
+
+    <div class="controls">
+      <button onclick="playWithAI()">Play vs AI</button>
+      <button onclick="playOffline()">Offline Multiplayer</button>
+      <button onclick="nextLevel()">Next Level</button>
+    </div>
+  </div>
+
+  <audio id="bg-music" loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="click-sound">
+    <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg">
+  </audio>
+
+  <script src="script.js"></script>
 </body>
-          </html>
+</html>
