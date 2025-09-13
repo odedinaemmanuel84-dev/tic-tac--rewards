@@ -1,185 +1,200 @@
-const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
+const API_ROOT = "https://your-backend.onrender.com"; // replace with Render backend
 
 let currentUser = null;
-let boardState = Array(9).fill("");
-let currentTurn = "X"; // Player is always X
-let aiEnabled = true; // AI opponent enabled
+let board = ["","","","","","","","",""];
+let currentPlayer = "X";
+let gameMode = null;
+let aiLevel = "easy";
 
-// --- Sound effects ---
-const clickSound = new Audio("click.mp3");
-const winSound = new Audio("win.mp3");
+// 🎵 Audio
+const bgMusic = document.getElementById("bg-music");
+const clickSound = document.getElementById("click-sound");
+const winSound = document.getElementById("win-sound");
+const drawSound = document.getElementById("draw-sound");
 
-// --- AUTH FUNCTIONS ---
-// Register new user
-async function registerUser() {
-    const name = document.getElementById("register-name").value;
-    const email = document.getElementById("register-email").value;
-    if (!name || !email) return alert("Enter name & email!");
+// --- Auth ---
+async function register(){
+  const name = document.getElementById("reg-name").value;
+  const email = document.getElementById("reg-email").value;
+  const password = document.getElementById("reg-password").value;
 
-    const res = await fetch(`${API_ROOT}/api/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email })
-    });
-    currentUser = await res.json();
-    startGame();
+  const res = await fetch(`${API_ROOT}/api/register`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ name, email, password })
+  });
+  const data = await res.json();
+  alert(data.message || data.error);
 }
 
-// Login existing user
-async function loginUser() {
-    const email = document.getElementById("login-email").value;
-    if (!email) return alert("Enter email!");
-    // Backend returns user if exists
-    const res = await fetch(`${API_ROOT}/api/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: "", email })
-    });
-    currentUser = await res.json();
-    startGame();
-}
+async function login(){
+  const email = document.getElementById("login-email").value;
+  const password = document.getElementById("login-password").value;
 
-// Logout
-function logout() {
-    currentUser = null;
-    boardState = Array(9).fill("");
-    document.getElementById("game-card").style.display = "none";
-    document.getElementById("auth-card").style.display = "flex";
-}
-
-// --- GAME FUNCTIONS ---
-function startGame() {
-    document.getElementById("auth-card").style.display = "none";
-    document.getElementById("game-card").style.display = "block";
+  const res = await fetch(`${API_ROOT}/api/login`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  if(data.user){
+    currentUser = data.user;
+    document.getElementById("welcome").innerText = "Welcome " + currentUser.name;
     updateUserInfo();
-    drawBoard();
+    document.getElementById("auth-forms").style.display="none";
+    document.getElementById("user-info").style.display="block";
+    bgMusic.play();
+  } else {
+    alert(data.error);
+  }
 }
 
-function updateUserInfo() {
-    document.getElementById("user-name").innerText = currentUser.name || "Guest";
-    document.getElementById("user-balance").innerText = `Balance: ₦${currentUser.balance}`;
-    document.getElementById("user-plays").innerText = `Plays Left: ${currentUser.playsLeft}`;
-    document.getElementById("user-premium").innerText = `Premium: ${currentUser.premium}`;
+function logout(){
+  currentUser = null;
+  document.getElementById("auth-forms").style.display="block";
+  document.getElementById("user-info").style.display="none";
+  bgMusic.pause();
 }
 
-// Draw Tic-Tac-Toe board
-function drawBoard() {
-    const board = document.getElementById("board");
-    board.innerHTML = "";
-    boardState.forEach((val, i) => {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.textContent = val;
-        cell.addEventListener("click", () => playerMove(i));
-        board.appendChild(cell);
-    });
+function updateUserInfo(){
+  document.getElementById("balance").innerText = "Balance: ₦" + (currentUser.balance || 0);
 }
 
-// Player makes a move
-function playerMove(i) {
-    if (boardState[i] !== "") return;
-    boardState[i] = "X";
-    clickSound.play();
-    if (checkWin("X")) return;
-    if (aiEnabled) setTimeout(aiMove, 300);
+// --- Game ---
+function startGame(mode){
+  gameMode = mode;
+  board = ["","","","","","","","",""];
+  currentPlayer = "X";
+  document.getElementById("status").innerText = "Player X's turn";
+  renderBoard();
+  if(mode==="ai") document.getElementById("difficulty").style.display="block";
 }
 
-// AI makes a move
-function aiMove() {
-    let empty = boardState.map((v, i) => v === "" ? i : null).filter(v => v !== null);
-    if (empty.length === 0) return;
-    const choice = empty[Math.floor(Math.random() * empty.length)];
-    boardState[choice] = "O";
-    clickSound.play();
-    checkWin("O");
-    drawBoard();
+function setDifficulty(level){
+  aiLevel = level;
+  document.getElementById("difficulty").style.display="none";
 }
 
-// Check for winner or draw
-function checkWin(player) {
-    const wins = [
-        [0, 1, 2],[3, 4, 5],[6, 7, 8],
-        [0, 3, 6],[1, 4, 7],[2, 5, 8],
-        [0, 4, 8],[2, 4, 6]
-    ];
-    for (const [a, b, c] of wins) {
-        if (boardState[a] === player && boardState[b] === player && boardState[c] === player) {
-            document.getElementById("board").childNodes[a].classList.add("win");
-            document.getElementById("board").childNodes[b].classList.add("win");
-            document.getElementById("board").childNodes[c].classList.add("win");
-            winSound.play();
-            alert(`${player} wins!`);
-            if (player === "X") simulateWin();
-            restartGame();
-            return true;
-        }
+function renderBoard(){
+  const boardDiv = document.getElementById("board");
+  boardDiv.innerHTML="";
+  board.forEach((cell, idx)=>{
+    const div = document.createElement("div");
+    div.className="cell";
+    div.innerText=cell;
+    div.onclick=()=>makeMove(idx);
+    boardDiv.appendChild(div);
+  });
+}
+
+function makeMove(idx){
+  if(board[idx]!=="" || checkWin("X") || checkWin("O")) return;
+
+  board[idx] = currentPlayer;
+  clickSound.play();
+  renderBoard();
+
+  if(checkWin(currentPlayer)){
+    winSound.play();
+    document.getElementById("status").innerText = currentPlayer + " wins!";
+    if(currentUser) sendWin();
+    return;
+  }
+
+  if(board.every(c=>c!=="")){
+    drawSound.play();
+    document.getElementById("status").innerText = "Draw!";
+    return;
+  }
+
+  currentPlayer = currentPlayer==="X" ? "O" : "X";
+  document.getElementById("status").innerText = "Player " + currentPlayer + "'s turn";
+
+  if(gameMode==="ai" && currentPlayer==="O"){
+    setTimeout(()=>{
+      const move = aiMove(aiLevel);
+      makeMove(move);
+    }, 600);
+  }
+}
+
+function checkWin(p){
+  const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return wins.some(combo=> combo.every(i=>board[i]===p));
+}
+
+function aiMove(level){
+  const empty = board.map((v,i)=> v===""?i:null).filter(v=>v!==null);
+
+  if(level==="easy") return empty[Math.floor(Math.random()*empty.length)];
+  if(level==="medium"){
+    for(let i of empty){
+      board[i]="O"; if(checkWin("O")){board[i]=""; return i;} board[i]="";
     }
-    if (!boardState.includes("")) {
-        alert("Draw!");
-        restartGame();
-        return true;
+    for(let i of empty){
+      board[i]="X"; if(checkWin("X")){board[i]=""; return i;} board[i]="";
     }
-    drawBoard();
-    return false;
+    return empty[Math.floor(Math.random()*empty.length)];
+  }
+  if(level==="hard"){
+    return minimax(board,"O").index;
+  }
 }
 
-// Restart the board
-function restartGame() {
-    boardState = Array(9).fill("");
-    currentTurn = "X";
-    drawBoard();
+function minimax(newBoard, player){
+  const availSpots = newBoard.map((v,i)=> v===""?i:null).filter(v=>v!==null);
+  if(checkWin("X")) return {score:-10};
+  if(checkWin("O")) return {score:10};
+  if(availSpots.length===0) return {score:0};
+
+  const moves=[];
+  for(let i of availSpots){
+    const move={index:i};
+    newBoard[i]=player;
+    if(player==="O") move.score = minimax(newBoard,"X").score;
+    else move.score = minimax(newBoard,"O").score;
+    newBoard[i]="";
+    moves.push(move);
+  }
+  let bestMove;
+  if(player==="O"){
+    let bestScore=-1000;
+    moves.forEach((m,idx)=>{ if(m.score>bestScore){bestScore=m.score; bestMove=idx;} });
+  } else {
+    let bestScore=1000;
+    moves.forEach((m,idx)=>{ if(m.score<bestScore){bestScore=m.score; bestMove=idx;} });
+  }
+  return moves[bestMove];
 }
 
-// --- BACKEND INTEGRATIONS ---
-// Simulate win / reward user
-async function simulateWin() {
-    if (!currentUser) return;
-    const res = await fetch(`${API_ROOT}/api/win`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: currentUser.email })
-    });
-    const data = await res.json();
-    currentUser.balance = data.balance;
-    currentUser.playsLeft = data.playsLeft;
+// --- API: Win reward ---
+async function sendWin(){
+  const res = await fetch(`${API_ROOT}/api/win`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ email: currentUser.email })
+  });
+  const data = await res.json();
+  currentUser.balance = data.balance;
+  updateUserInfo();
+}
+
+// --- Withdraw ---
+async function withdraw(){
+  if(!currentUser) return;
+  const account = prompt("Enter bank account number:");
+  const name = prompt("Enter account holder's name:");
+  if(!account || !name) return;
+
+  const res = await fetch(`${API_ROOT}/api/withdraw`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ email: currentUser.email, account_number: account, account_name: name })
+  });
+  const data = await res.json();
+  alert(data.message);
+  if(data.status==="success"){
+    currentUser.balance=0;
     updateUserInfo();
-}
-
-// Upgrade user to premium
-async function upgrade() {
-    if (!currentUser) return;
-    const res = await fetch(`${API_ROOT}/api/upgrade`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: currentUser.email, amount: 500 })
-    });
-    const data = await res.json();
-    if (data.authorization_url) window.open(data.authorization_url, "_blank");
-}
-
-// Withdraw money (simplified — only account + name)
-async function withdraw() {
-    if (!currentUser) return;
-    const account = prompt("Enter your bank account number:");
-    if (!account) return alert("Account number is required!");
-    const name = prompt("Enter account holder's name:");
-    if (!name) return alert("Account holder's name is required!");
-
-    const res = await fetch(`${API_ROOT}/api/withdraw`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            email: currentUser.email,
-            account_number: account,
-            account_name: name
-        })
-    });
-    const data = await res.json();
-    if (data.status === "success") {
-        alert(`Withdrawal of ₦${currentUser.balance} successful!`);
-        currentUser.balance = 0;
-        updateUserInfo();
-    } else {
-        alert(data.message || "Withdrawal failed!");
-    }
+  }
 }
