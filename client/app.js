@@ -1,4 +1,4 @@
-const API_URL = "https://your-backend.onrender.com/api"; // change to your Render backend URL
+const API_URL = "https://tic-tac-rewards-1.onrender.com";
 let token = localStorage.getItem("token");
 let currentUser = localStorage.getItem("currentUser");
 const bgMusic = document.getElementById("bg-music");
