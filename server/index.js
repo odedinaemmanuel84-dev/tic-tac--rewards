@@ -4,7 +4,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import fetch from "node-fetch";
 
 dotenv.config();
 const app = express();
@@ -56,7 +55,7 @@ function authMiddleware(req, res, next) {
 }
 
 // --- Routes ---
-app.get("/", (req, res) => res.send("Tic-Tac-Toe Backend is running!"));
+app.get("/", (req, res) => res.send("✅ Tic-Tac-Toe Backend is running!"));
 
 // Register
 app.post("/api/register", async (req, res) => {
@@ -130,7 +129,7 @@ app.post("/api/upgrade", authMiddleware, async (req, res) => {
   } catch (e) { res.status(500).json({ error: "Server error" }); }
 });
 
-// Withdraw (simplified demo, you can expand with Paystack Transfers)
+// Withdraw (simplified demo)
 app.post("/api/withdraw", authMiddleware, async (req, res) => {
   try {
     const { account_number, account_name } = req.body;
@@ -145,4 +144,4 @@ app.post("/api/withdraw", authMiddleware, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log("Backend running on " + PORT));
+app.listen(PORT, () => console.log("🚀 Backend running on " + PORT));
