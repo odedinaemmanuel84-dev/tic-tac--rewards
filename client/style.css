@@ -1,77 +1,54 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  flex-direction: column;
-}
-
-#auth-container {
-  display: flex;
-  gap: 20px;
-}
-
-.form-box {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 20px;
-  border-radius: 12px;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: white;
   text-align: center;
 }
 
-.form-box input {
+h1, h2, h3 {
+  margin: 10px 0;
+}
+
+input, button {
   display: block;
   margin: 10px auto;
   padding: 10px;
+  width: 80%;
+  max-width: 300px;
   border-radius: 8px;
   border: none;
-  width: 80%;
 }
 
-.form-box button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #ff6f61;
+button {
+  background: limegreen;
   color: white;
+  font-weight: bold;
   cursor: pointer;
 }
 
-.form-box button:hover {
-  background: #ff3b2f;
+button:hover {
+  background: darkgreen;
+}
+
+#gameCanvas {
+  margin: 20px auto;
+  background: black;
+  display: block;
 }
 
 .hidden {
   display: none;
 }
 
-#game-container {
-  text-align: center;
+.controls {
+  margin: 20px;
 }
 
-.game-board {
+#withdraw-box {
   margin: 20px auto;
-}
-
-.controls button {
-  margin: 10px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: #00c9a7;
-  color: white;
-  cursor: pointer;
-}
-
-.controls button:hover {
-  background: #009f87;
-}
-
-canvas {
-  background: #111;
-  border: 3px solid white;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+  max-width: 350px;
 }
