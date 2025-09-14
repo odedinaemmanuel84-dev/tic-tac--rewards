@@ -1,142 +1,151 @@
 const API_URL = "https://tic-tac-rewards-1.onrender.com";
-let token = localStorage.getItem("token");
-let currentUser = localStorage.getItem("currentUser");
-const bgMusic = document.getElementById("bg-music");
-const clickSound = document.getElementById("click-sound");
+let board = Array(9).fill("");
+let currentPlayer = "X";
+let premium = false;
 
-if (token && currentUser) {
-  showGame();
+function renderBoard() {
+  const game = document.getElementById("game");
+  game.innerHTML = "";
+  board.forEach((cell, i) => {
+    const div = document.createElement("div");
+    div.className = "cell";
+    div.textContent = cell;
+    div.onclick = () => makeMove(i);
+    game.appendChild(div);
+  });
 }
 
-async function register() {
-  let name = document.getElementById("registerName").value;
-  let email = document.getElementById("registerEmail").value;
-  let password = document.getElementById("registerPassword").value;
-
-  if (!name || !email || !password) {
-    alert("Fill all fields");
-    return;
-  }
-
-  try {
-    let res = await fetch(`${API_URL}/auth/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
-
-    let data = await res.json();
-    if (res.ok) {
-      alert("Registered successfully! Now login.");
-    } else {
-      alert(data.message || "Error registering");
-    }
-  } catch (err) {
-    alert("Server error, try again later.");
-  }
+function makeMove(i) {
+  if (board[i]) return;
+  board[i] = currentPlayer;
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  renderBoard();
+  checkWinner();
 }
 
-async function login() {
-  let email = document.getElementById("loginEmail").value;
-  let password = document.getElementById("loginPassword").value;
+function checkWinner() {
+  const winCombos = [
+    [0,1,2],[3,4,5],[6,7,8],
+    [0,3,6],[1,4,7],[2,5,8],
+    [0,4,8],[2,4,6]
+  ];
+  for (let combo of winCombos) {
+    const [a,b,c] = combo;
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+      let user = JSON.parse(localStorage.getItem("user"));
+      let reward = 100;
 
-  try {
-    let res = await fetch(`${API_URL}/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+      if (user && user.premium) {
+        if (user.premiumLevel === "Bronze") reward = 400;
+        else if (user.premiumLevel === "Silver") reward = 1000;
+        else if (user.premiumLevel === "Gold") reward = 3000;
+      }
 
-    let data = await res.json();
-    if (res.ok) {
-      token = data.token;
-      localStorage.setItem("token", token);
-      localStorage.setItem("currentUser", email);
-      currentUser = email;
-      showGame();
-    } else {
-      alert(data.message || "Invalid login");
+      document.getElementById("status").textContent = `${board[a]} wins! 🎉 Reward: ₦${reward}`;
+      return board[a];
     }
-  } catch (err) {
-    alert("Server error, try again later.");
   }
+  return null;
+}
+
+// Auth
+function register() {
+  fetch(`${API_URL}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: document.getElementById("regName").value,
+      email: document.getElementById("regEmail").value,
+      password: document.getElementById("regPass").value
+    })
+  }).then(res => res.json()).then(data => alert(data.message));
+}
+
+function login() {
+  fetch(`${API_URL}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: document.getElementById("logEmail").value,
+      password: document.getElementById("logPass").value
+    })
+  }).then(res => res.json()).then(data => {
+    if (data.success) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      showProfile();
+    } else {
+      alert(data.message);
+    }
+  });
+}
+
+function showProfile() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  document.getElementById("auth").style.display = "none";
+  document.getElementById("profile").style.display = "block";
+  document.getElementById("welcome").textContent = `Welcome, ${user.name}`;
+  document.getElementById("premiumStatus").textContent = `Premium: ${user.premiumLevel}`;
+  document.getElementById("balance").textContent = `Balance: ₦${user.balance}`;
 }
 
 function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("currentUser");
-  token = null;
-  currentUser = null;
-  document.getElementById("auth-container").classList.remove("hidden");
-  document.getElementById("game-container").classList.add("hidden");
-  bgMusic.pause();
+  localStorage.clear();
+  location.reload();
 }
 
-function showGame() {
-  document.getElementById("auth-container").classList.add("hidden");
-  document.getElementById("game-container").classList.remove("hidden");
-  document.getElementById("status").innerText = `Welcome ${currentUser}`;
-  bgMusic.play();
-}
-
-// 🎮 Game Logic
-let canvas = document.getElementById("gameCanvas");
-let ctx = canvas.getContext("2d");
-
-function drawBoard() {
-  ctx.fillStyle = "black";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "lime";
-  ctx.font = "20px Arial";
-  ctx.fillText("Game Running...", 120, 200);
-}
-
-function playWithAI() {
-  clickSound.play();
-  drawBoard();
-  document.getElementById("status").innerText = "Playing vs AI 🤖";
-}
-
-function playOffline() {
-  clickSound.play();
-  drawBoard();
-  document.getElementById("status").innerText = "Offline Multiplayer 👫";
-}
-
-function nextLevel() {
-  clickSound.play();
-  drawBoard();
-  document.getElementById("status").innerText = "Next Level Unlocked 🔓";
-}
-
-// 🔹 Withdraw
-async function withdrawFunds() {
-  let amount = document.getElementById("withdrawAmount").value;
-  let accountNumber = document.getElementById("withdrawAccount").value;
-  let bankName = document.getElementById("withdrawBank").value;
-
-  if (!amount || !accountNumber || !bankName) {
-    alert("Fill all fields");
+// Premium
+function activatePremium() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    alert("Please login first.");
     return;
   }
 
-  try {
-    let res = await fetch(`${API_URL}/withdraw`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ amount, accountNumber, bankName })
-    });
-
-    let data = await res.json();
-    if (res.ok) {
-      alert("Withdrawal request sent successfully!");
-    } else {
-      alert(data.message || "Error withdrawing");
-    }
-  } catch (err) {
-    alert("Server error, try again later.");
+  let amount = prompt("Enter amount (min ₦500, max ₦5000):", "500");
+  if (!amount || isNaN(amount) || amount < 500 || amount > 5000) {
+    alert("Invalid amount.");
+    return;
   }
+
+  let handler = PaystackPop.setup({
+    key: "pk_test_xxxxxxxxxxxxx", // Replace with your Paystack PUBLIC KEY
+    email: user.email,
+    amount: amount * 100,
+    currency: "NGN",
+    callback: function(response) {
+      fetch(`${API_URL}/verify-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({ reference: response.reference, amount })
+      }).then(res => res.json()).then(data => {
+        if (data.success) {
+          alert(`✅ Premium unlocked: ${data.user.premiumLevel}`);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          showProfile();
+        } else {
+          alert("❌ Payment verification failed.");
+        }
+      });
+    }
+  });
+
+  handler.openIframe();
 }
+
+function withdraw() {
+  let amount = prompt("Enter withdrawal amount:");
+  fetch(`${API_URL}/withdraw`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${localStorage.getItem("token")}`
+    },
+    body: JSON.stringify({ amount })
+  }).then(res => res.json()).then(data => alert(data.message));
+}
+
+renderBoard();
