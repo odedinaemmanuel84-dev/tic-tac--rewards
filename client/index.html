@@ -1,54 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tic Tac Toe Modern</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Tic Tac Toe Premium</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body>
-  <!-- Auth Screen -->
-  <div id="auth-container">
-    <h2>Welcome to Tic Tac Toe</h2>
-    <div id="forms">
-      <div class="form-box">
-        <h3>Register</h3>
-        <input type="text" id="reg-name" placeholder="Name" />
-        <input type="email" id="reg-email" placeholder="Email" />
-        <input type="password" id="reg-password" placeholder="Password" />
-        <button id="registerBtn">Register</button>
-      </div>
+  <h1>Tic Tac Toe</h1>
+  <div id="auth">
+    <h2>Register</h2>
+    <input id="regName" placeholder="Name">
+    <input id="regEmail" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
 
-      <div class="form-box">
-        <h3>Login</h3>
-        <input type="email" id="login-email" placeholder="Email" />
-        <input type="password" id="login-password" placeholder="Password" />
-        <button id="loginBtn">Login</button>
-      </div>
-    </div>
-    <p id="auth-message"></p>
+    <h2>Login</h2>
+    <input id="logEmail" placeholder="Email">
+    <input id="logPass" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
   </div>
 
-  <!-- Game Screen -->
-  <div id="game-container" style="display:none;">
-    <h2 id="welcome-user"></h2>
-
-    <div id="mode-selection">
-      <button onclick="startGame('ai')">Play vs AI</button>
-      <button onclick="startGame('2p')">2 Players</button>
-      <button onclick="activatePremium()">Unlock Premium</button>
-    </div>
-
-    <div id="game-board" class="board"></div>
-    <p id="status"></p>
-
-    <audio id="moveSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
-    <audio id="winSound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
-    <audio id="bgMusic" src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/It's_time_for_adventure/Komiku_-_12_-_Battle_of_Pogs.mp3" loop></audio>
-
-    <button id="restartBtn">Restart</button>
-    <button id="logoutBtn">Logout</button>
+  <div id="profile" style="display:none;">
+    <h2 id="welcome"></h2>
+    <p id="premiumStatus"></p>
+    <p id="balance"></p>
+    <button onclick="activatePremium()">Unlock Premium</button>
+    <button onclick="withdraw()">Withdraw</button>
+    <button onclick="logout()">Logout</button>
   </div>
+
+  <div id="game" class="board"></div>
+  <p id="status"></p>
 
   <script src="app.js"></script>
 </body>
