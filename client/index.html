@@ -1,37 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Tic Tac Toe Premium</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tic Tac Toe - Modern</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Tic Tac Toe</h1>
-  <div id="auth">
-    <h2>Register</h2>
-    <input id="regName" placeholder="Name">
-    <input id="regEmail" placeholder="Email">
-    <input id="regPass" type="password" placeholder="Password">
-    <button onclick="register()">Register</button>
+  <header>
+    <h1>🎮 Modern Tic Tac Toe</h1>
+    <nav>
+      <button id="registerBtn">Register</button>
+      <button id="loginBtn">Login</button>
+      <button id="logoutBtn" style="display:none;">Logout</button>
+    </nav>
+  </header>
 
-    <h2>Login</h2>
-    <input id="logEmail" placeholder="Email">
-    <input id="logPass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-  </div>
+  <main>
+    <section id="authSection">
+      <div id="registerForm" class="authForm hidden">
+        <h2>Register</h2>
+        <input type="text" id="regName" placeholder="Full Name" />
+        <input type="email" id="regEmail" placeholder="Email" />
+        <input type="password" id="regPassword" placeholder="Password" />
+        <button onclick="registerUser()">Register</button>
+      </div>
 
-  <div id="profile" style="display:none;">
-    <h2 id="welcome"></h2>
-    <p id="premiumStatus"></p>
-    <p id="balance"></p>
-    <button onclick="activatePremium()">Unlock Premium</button>
-    <button onclick="withdraw()">Withdraw</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+      <div id="loginForm" class="authForm hidden">
+        <h2>Login</h2>
+        <input type="email" id="loginEmail" placeholder="Email" />
+        <input type="password" id="loginPassword" placeholder="Password" />
+        <button onclick="loginUser()">Login</button>
+      </div>
+    </section>
 
-  <div id="game" class="board"></div>
-  <p id="status"></p>
+    <section id="gameSection" class="hidden">
+      <h2 id="welcomeText"></h2>
+      <div class="controls">
+        <select id="modeSelect">
+          <option value="ai">Play vs AI</option>
+          <option value="2p">2 Players (Local)</option>
+        </select>
+        <select id="aiLevel">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <button onclick="startGame()">Start Game</button>
+        <button id="toggleSound">🔇 Toggle Sound</button>
+      </div>
 
-  <script src="app.js"></script>
+      <div id="board" class="board"></div>
+
+      <div id="status"></div>
+      <div id="score">
+        <p>X Wins: <span id="xWins">0</span></p>
+        <p>O Wins: <span id="oWins">0</span></p>
+        <p>Draws: <span id="draws">0</span></p>
+      </div>
+    </section>
+  </main>
+
+  <audio id="moveSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9f82ff55f4.mp3?filename=click-124467.mp3"></audio>
+  <audio id="winSound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_41d4f9b85c.mp3?filename=success-1-6297.mp3"></audio>
+  <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/10/30/audio_4b5d9dcb67.mp3?filename=soft-piano-ambient-121349.mp3" loop></audio>
+
+  <script src="script.js"></script>
 </body>
 </html>
