@@ -1,102 +1,187 @@
-/* General styling */
+/* General body styles */
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  color: white;
-  margin: 0;
-  padding: 0;
-}
-
-/* Header */
-header {
-  padding: 20px;
-  background: #0f3460;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
-}
-
-/* Auth section */
-#auth-section {
+  background: linear-gradient(135deg, #6dd5ed, #2193b0);
+  color: #fff;
   display: flex;
   justify-content: center;
-  gap: 40px;
-  margin: 20px;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  flex-direction: column;
+}
+
+/* AUTH SECTION */
+.auth-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  border-radius: 12px;
+  width: 320px;
+  text-align: center;
 }
 
 .auth-box {
-  background: #1e1e2f;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.auth-box input {
-  display: block;
-  width: 200px;
-  margin: 10px auto;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.auth-box button {
-  padding: 10px 20px;
+.tabs button {
+  flex: 1;
+  padding: 0.5rem;
+  background: #444;
   border: none;
-  border-radius: 8px;
-  background: #e94560;
   color: white;
   cursor: pointer;
+  border-radius: 6px;
+}
+
+.tabs button.active {
+  background: #007bff;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.auth-form input {
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+}
+
+.auth-form button {
+  padding: 0.8rem;
+  background: #007bff;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.auth-form button:hover {
+  background: #0056b3;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* MODE SELECTION */
+#mode-section {
+  text-align: center;
+}
+
+.mode-btn {
+  display: block;
+  margin: 1rem auto;
+  padding: 0.8rem 1.5rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 220px;
+}
+
+.mode-btn:hover {
+  background: #0056b3;
 }
 
 #logout-btn {
-  background: #f05454;
-  padding: 10px 20px;
-  margin: auto;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
+  margin-top: 1.5rem;
+  background: #dc3545;
 }
 
-/* Game board */
+#logout-btn:hover {
+  background: #b52b38;
+}
+
+/* GAME SECTION */
+#game-section {
+  text-align: center;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+#status {
+  margin: 1rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 100px);
-  grid-gap: 10px;
+  grid-template-rows: repeat(3, 100px);
+  gap: 5px;
   justify-content: center;
-  margin: 20px auto;
+  margin: 0 auto;
 }
 
 .cell {
   width: 100px;
   height: 100px;
-  background: #0f3460;
-  color: #fff;
+  background: white;
+  color: black;
   font-size: 2.5rem;
   display: flex;
-  align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  align-items: center;
   cursor: pointer;
-  transition: background 0.3s;
+  border-radius: 8px;
+  transition: background 0.2s;
 }
 
 .cell:hover {
-  background: #e94560;
+  background: #ddd;
 }
 
-/* Status text */
-#status {
-  font-size: 1.2rem;
-  margin: 15px;
-}
-
-/* Music button */
-#music-toggle {
-  margin-top: 15px;
-  padding: 10px 15px;
-  border-radius: 8px;
+/* Buttons inside game header */
+#sound-toggle,
+#back-btn {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: #444;
   border: none;
-  cursor: pointer;
-  background: #533483;
   color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#sound-toggle:hover,
+#back-btn:hover {
+  background: #222;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+  .board {
+    grid-template-columns: repeat(3, 80px);
+    grid-template-rows: repeat(3, 80px);
   }
+  .cell {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+}
