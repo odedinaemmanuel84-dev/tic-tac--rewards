@@ -1,102 +1,52 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-  color: #fff;
-  margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-}
-
-header {
-  background: rgba(0,0,0,0.4);
-  padding: 1rem;
-  text-align: center;
-}
-
-header h1 {
-  margin: 0;
-}
-
-nav button {
-  margin: 0.2rem;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: #ff9800;
-  color: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-main {
-  flex: 1;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
+  background: #f4f4f9;
+  margin: 0;
+  padding: 20px;
 }
 
-.authForm {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 1rem;
+.auth-container {
+  margin-bottom: 20px;
 }
 
-.authForm input {
-  padding: 0.6rem;
-  border-radius: 4px;
-  border: none;
+input {
+  display: block;
+  margin: 5px 0;
+  padding: 8px;
+  width: 200px;
 }
 
-.authForm button {
-  background: #2196f3;
-  padding: 0.7rem;
-  border: none;
-  color: white;
-  border-radius: 6px;
+button {
+  padding: 8px 12px;
+  margin-top: 5px;
   cursor: pointer;
+}
+
+.game-container {
+  text-align: center;
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
-  gap: 5px;
-  margin-top: 1rem;
+  grid-gap: 5px;
 }
 
 .cell {
-  background: rgba(255,255,255,0.2);
-  border-radius: 8px;
+  width: 100px;
+  height: 100px;
+  background: white;
+  border: 2px solid #333;
+  font-size: 2em;
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 2rem;
+  justify-content: center;
   cursor: pointer;
-  transition: background 0.3s;
-}
-
-.cell:hover {
-  background: rgba(255,255,255,0.4);
-}
-
-.controls {
-  margin: 1rem;
-  display: flex;
-  gap: 0.5rem;
 }
 
 .hidden {
   display: none;
-}
-
-#status {
-  margin-top: 1rem;
-  font-size: 1.2rem;
-}
-
-#score {
-  margin-top: 1rem;
 }
