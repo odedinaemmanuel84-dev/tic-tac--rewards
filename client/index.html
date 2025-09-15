@@ -3,52 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tic-Tac-Toe Rewards</title>
+  <title>Tic Tac Toe</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- AUTH SECTION -->
-  <div id="authSection" class="card">
-    <h2 id="authTitle">Login / Register</h2>
-    <form id="authForm">
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p>
-      <button id="toggleAuth">Need an account? Register</button>
-    </p>
+  <!-- Auth Section -->
+  <div id="authForm" class="card">
+    <h2>Login / Register</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="loginBtn">Login</button>
+    <button id="registerBtn">Register</button>
   </div>
 
-  <!-- GAME SECTION -->
-  <div id="gameSection" style="display:none;">
-    <div class="header">
-      <button id="logoutBtn">Logout</button>
-    </div>
-
+  <!-- Game Section -->
+  <div id="gameContainer" style="display: none;">
     <h2>Tic-Tac-Toe</h2>
-    <p id="status">Your turn!</p>
-
-    <select id="mode">
-      <option value="ai">Play vs AI</option>
-      <option value="offline">2 Players (Offline)</option>
-    </select>
-
-    <div id="board">
-      <div class="cell" data-index="0"></div>
-      <div class="cell" data-index="1"></div>
-      <div class="cell" data-index="2"></div>
-      <div class="cell" data-index="3"></div>
-      <div class="cell" data-index="4"></div>
-      <div class="cell" data-index="5"></div>
-      <div class="cell" data-index="6"></div>
-      <div class="cell" data-index="7"></div>
-      <div class="cell" data-index="8"></div>
+    <div class="mode-select">
+      <button onclick="setMode('multiplayer')">Offline Multiplayer</button>
+      <button onclick="setMode('ai')">Play vs AI</button>
     </div>
-
-    <button id="restartBtn">Restart</button>
+    <div id="board" class="board"></div>
+    <p id="status"></p>
+    <button onclick="resetGame()">Restart</button>
+    <button onclick="logout()">Logout</button>
   </div>
 
-  <script src="script.js"></script>
+  <script src="index.js"></script>
 </body>
-  </html>
+      </html>
