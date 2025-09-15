@@ -1,4 +1,4 @@
-const API_ROOT = "https://tic-tac-rewards-1.onrender.com"; // replace with your backend
+const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
 
 // DOM elements
 const authForm = document.getElementById("authForm");
