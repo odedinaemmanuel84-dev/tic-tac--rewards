@@ -1,187 +1,109 @@
-/* General body styles */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #6dd5ed, #2193b0);
-  color: #fff;
+  background: linear-gradient(135deg, #74ebd5, #9face6);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   margin: 0;
-  flex-direction: column;
 }
 
-/* AUTH SECTION */
-.auth-container {
-  background: rgba(0, 0, 0, 0.7);
+.card {
+  background: white;
   padding: 2rem;
   border-radius: 12px;
-  width: 320px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
   text-align: center;
+  width: 300px;
 }
 
-.auth-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.tabs {
-  display: flex;
-  justify-content: space-around;
+.card h2 {
   margin-bottom: 1rem;
+}
+
+.card input {
   width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-.tabs button {
-  flex: 1;
-  padding: 0.5rem;
-  background: #444;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.tabs button.active {
-  background: #007bff;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
+.card button {
   width: 100%;
-}
-
-.auth-form input {
-  padding: 0.7rem;
-  border-radius: 6px;
-  border: none;
-  font-size: 1rem;
-}
-
-.auth-form button {
-  padding: 0.8rem;
-  background: #007bff;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.auth-form button:hover {
-  background: #0056b3;
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* MODE SELECTION */
-#mode-section {
-  text-align: center;
-}
-
-.mode-btn {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.8rem 1.5rem;
-  background: #007bff;
-  color: white;
+  padding: 10px;
+  margin-top: 10px;
   border: none;
   border-radius: 8px;
+  background: #4e54c8;
+  color: white;
   font-size: 1rem;
   cursor: pointer;
-  width: 220px;
 }
 
-.mode-btn:hover {
-  background: #0056b3;
+.card button:hover {
+  background: #3b3fa0;
 }
 
-#logout-btn {
-  margin-top: 1.5rem;
-  background: #dc3545;
-}
-
-#logout-btn:hover {
-  background: #b52b38;
-}
-
-/* GAME SECTION */
-#game-section {
+#gameSection {
   text-align: center;
+  color: white;
 }
 
-.game-header {
+.header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  width: 100%;
+  justify-content: flex-end;
 }
 
-#status {
-  margin: 1rem 0;
-  font-size: 1.2rem;
-  font-weight: bold;
+#logoutBtn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #ff4b5c;
+  color: white;
+  cursor: pointer;
 }
 
-.board {
+#logoutBtn:hover {
+  background: #d43a4c;
+}
+
+#board {
   display: grid;
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
-  gap: 5px;
+  gap: 8px;
   justify-content: center;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 
 .cell {
   width: 100px;
   height: 100px;
   background: white;
-  color: black;
-  font-size: 2.5rem;
+  border-radius: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
   cursor: pointer;
-  border-radius: 8px;
-  transition: background 0.2s;
 }
 
 .cell:hover {
-  background: #ddd;
+  background: #f0f0f0;
 }
 
-/* Buttons inside game header */
-#sound-toggle,
-#back-btn {
-  margin-left: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: #444;
+#restartBtn {
+  margin-top: 15px;
+  padding: 10px 20px;
   border: none;
+  border-radius: 8px;
+  background: #4e54c8;
   color: white;
-  border-radius: 6px;
   cursor: pointer;
 }
 
-#sound-toggle:hover,
-#back-btn:hover {
-  background: #222;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-  .board {
-    grid-template-columns: repeat(3, 80px);
-    grid-template-rows: repeat(3, 80px);
+#restartBtn:hover {
+  background: #3b3fa0;
   }
-  .cell {
-    width: 80px;
-    height: 80px;
-    font-size: 2rem;
-  }
-}
