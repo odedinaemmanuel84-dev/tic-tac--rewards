@@ -1,7 +1,7 @@
 // script.js
 
 // ======= CONFIG =======
-const API_ROOT = "https://tic-tac-rewards-1.onrender.com/api"; // replace with your backend URL
+const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
 
 // ======= UI ELEMENTS =======
 const authSection = document.getElementById("authSection");
