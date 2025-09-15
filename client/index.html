@@ -1,34 +1,103 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tic Tac Toe Game</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TicTacRewards — Modern</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="auth-container">
-    <h2>Register</h2>
-    <input type="text" id="regName" placeholder="Name" />
-    <input type="email" id="regEmail" placeholder="Email" />
-    <input type="password" id="regPassword" placeholder="Password" />
-    <button onclick="register()">Register</button>
+  <div class="app">
+    <header class="topbar">
+      <h1>TicTacRewards</h1>
+      <div class="top-controls">
+        <select id="modeSelect" title="Mode">
+          <option value="ai">Play vs AI</option>
+          <option value="local">2-Player (Local)</option>
+        </select>
 
-    <h2>Login</h2>
-    <input type="email" id="loginEmail" placeholder="Email" />
-    <input type="password" id="loginPassword" placeholder="Password" />
-    <button onclick="login()">Login</button>
+        <select id="aiLevel" title="AI difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
 
-    <button onclick="logout()">Logout</button>
+        <button id="musicToggle" class="muted">Music</button>
+        <button id="logoutBtn" style="display:none">Logout</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="left">
+        <div id="authCard" class="card auth-card">
+          <div class="tabs">
+            <button id="tabLogin" class="tab active">Login</button>
+            <button id="tabRegister" class="tab">Register</button>
+          </div>
+
+          <form id="loginForm" class="auth-form">
+            <input id="loginEmail" type="email" placeholder="Email" required />
+            <input id="loginPassword" type="password" placeholder="Password" required />
+            <button id="btnLogin" type="button">Login</button>
+          </form>
+
+          <form id="registerForm" class="auth-form" style="display:none">
+            <input id="regName" type="text" placeholder="Full name" required />
+            <input id="regEmail" type="email" placeholder="Email" required />
+            <input id="regPassword" type="password" placeholder="Password" required />
+            <button id="btnRegister" type="button">Register</button>
+          </form>
+
+          <div id="authMsg" class="muted"></div>
+        </div>
+
+        <div id="profileCard" class="card profile-card" style="display:none">
+          <h3 id="profileName">Player</h3>
+          <p id="profileEmail" class="muted"></p>
+          <p id="profileBalance" class="muted">Balance: ₦0</p>
+          <p id="profileLevel" class="muted">Level: 1</p>
+          <div class="profile-actions">
+            <button id="btnUpgrade">Upgrade</button>
+            <button id="btnWithdraw">Withdraw</button>
+          </div>
+        </div>
+
+        <div class="card info-card">
+          <h4>How it works</h4>
+          <p class="muted">Register → Login → Choose mode. If logged-in, wins will call backend /api/win to credit rewards (if implemented).</p>
+        </div>
+      </aside>
+
+      <section class="right">
+        <div class="card board-card">
+          <div class="top-row">
+            <div id="levelBadge" class="level">Lv 1</div>
+            <div class="progress-wrap"><div id="levelProgress" class="progress-bar"></div></div>
+            <div id="perWin" class="muted">Per win: ₦0</div>
+          </div>
+
+          <div id="statusLine" class="status">Welcome — choose mode & play</div>
+          <div id="board" class="board" aria-label="tic tac toe board"></div>
+
+          <div class="actions-row">
+            <button id="btnRestart">Restart</button>
+            <button id="btnHint">Hint</button>
+          </div>
+        </div>
+
+        <div class="card history-card">
+          <h4>Recent Activity</h4>
+          <ul id="historyList" class="history-list"><li class="muted">No activity yet</li></ul>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <div class="game-container hidden">
-    <h1>Tic Tac Toe</h1>
-    <div id="game-board" class="board"></div>
-    <p id="status"></p>
-    <button onclick="resetGame()">Restart Game</button>
-  </div>
+  <!-- audio (hosted royalty-free sources) -->
+  <audio id="sndClick"><source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" type="audio/ogg"></audio>
+  <audio id="sndWin"><source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg" type="audio/ogg"></audio>
+  <audio id="bgMusic"><source src="https://www.bensound.com/bensound-music/bensound-energy.mp3" type="audio/mp3"></audio>
 
   <script src="script.js"></script>
 </body>
-</html>
+              </html>
