@@ -9,7 +9,7 @@
      POST  /api/withdraw        { account_number, account_name } (Authorization) -> optional
 */
 
-const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
+const API_ROOT = https://tic-tac-rewards-1.onrender.com
 
 // UI elements
 const tabLogin = document.getElementById("tabLogin");
