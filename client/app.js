@@ -1,15 +1,4 @@
-/* script.js
-   - Replace API_ROOT below with your Render backend URL (include https:// and any -1 suffix)
-   - The frontend expects these backend endpoints:
-     POST  /api/auth/register   {name,email,password}
-     POST  /api/auth/login      {email,password} -> returns { token }
-     GET   /api/auth/me         (Authorization: Bearer <token>) -> returns user
-     POST  /api/win             { mode } (Authorization) -> optional (if backend supports rewards)
-     POST  /api/upgrade         { amount } (Authorization) -> optional
-     POST  /api/withdraw        { account_number, account_name } (Authorization) -> optional
-*/
-
-const API_ROOT = https://tic-tac-rewards-1.onrender.com
+const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
 
 // UI elements
 const tabLogin = document.getElementById("tabLogin");
