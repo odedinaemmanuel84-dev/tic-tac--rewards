@@ -1,6 +1,7 @@
+// Replace with your Render backend URL
 const API_ROOT = "https://tic-tac-rewards-1.onrender.com";
 
-// DOM elements
+// Elements
 const authForm = document.getElementById("authForm");
 const loginBtn = document.getElementById("loginBtn");
 const registerBtn = document.getElementById("registerBtn");
@@ -22,10 +23,11 @@ loginBtn.addEventListener("click", async (e) => {
 
   const data = await res.json();
   if (res.ok) {
+    alert("✅ Login success!");
     localStorage.setItem("token", data.token);
     loadGame();
   } else {
-    alert(data.message || "Login failed");
+    alert(data.message || "❌ Login failed");
   }
 });
 
@@ -42,10 +44,11 @@ registerBtn.addEventListener("click", async (e) => {
 
   const data = await res.json();
   if (res.ok) {
+    alert("✅ Registration success!");
     localStorage.setItem("token", data.token);
     loadGame();
   } else {
-    alert(data.message || "Registration failed");
+    alert(data.message || "❌ Registration failed");
   }
 });
 
@@ -98,11 +101,11 @@ function handleCellClick(index) {
   renderBoard();
 
   if (checkWin(currentPlayer)) {
-    statusElement.textContent = `Player ${currentPlayer} wins!`;
+    statusElement.textContent = `🎉 Player ${currentPlayer} wins!`;
     gameActive = false;
     return;
   } else if (board.every(cell => cell)) {
-    statusElement.textContent = "It's a draw!";
+    statusElement.textContent = "🤝 It's a draw!";
     gameActive = false;
     return;
   }
@@ -124,11 +127,11 @@ function aiMove() {
   renderBoard();
 
   if (checkWin("O")) {
-    statusElement.textContent = "AI wins!";
+    statusElement.textContent = "🤖 AI wins!";
     gameActive = false;
     return;
   } else if (board.every(cell => cell)) {
-    statusElement.textContent = "It's a draw!";
+    statusElement.textContent = "🤝 It's a draw!";
     gameActive = false;
     return;
   }
